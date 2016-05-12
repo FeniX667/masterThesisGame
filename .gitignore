@@ -1,1 +1,7 @@
 /.idea
+/*.iml
+/out/production/LoveLetter/dmalarczyk/masterThesis/*.class
+/out/production/LoveLetter/dmalarczyk/masterThesis/gameEngine/*.class
+*.class
+/Love Letter.iml
+*.iml

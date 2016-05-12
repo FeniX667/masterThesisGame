@@ -1,10 +1,8 @@
-package agh.masterThesis.gameEngine;
+package dmalarczyk.masterThesis.gameEngine;
 
-import agh.masterThesis.model.CardType;
 
-/**
- * Created by Malar on 2016-05-11.
- */
+import dmalarczyk.masterThesis.model.CardType;
+
 public class Engine {
     public CardType[] deck = new CardType[]{CardType.guard, CardType.guard, CardType.guard, CardType.guard, CardType.guard,
             CardType.priest, CardType.priest,
@@ -23,6 +21,12 @@ public class Engine {
 
     public boolean safetyFlagPlayerA;
     public boolean safetyFlagPlayerB;
+
+    public int foo(){
+        int a=5;
+
+        return 5*2;
+    }
 
 
 }
