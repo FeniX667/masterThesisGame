@@ -6,6 +6,7 @@ import dmalarczyk.masterThesis.model.DecisionType;
 import dmalarczyk.masterThesis.model.PlayerSpace;
 import dmalarczyk.masterThesis.model.RoundState;
 
+import java.io.*;
 import java.util.Random;
 
 public class Engine {
@@ -15,11 +16,19 @@ public class Engine {
     public Player currentPlayer, opponentPlayer;
     public int iteration;
     Random rnd;
+    PrintWriter logger;
 
     public Engine(){
         rnd = new Random();
         roundState = new RoundState();
         iteration = 0;
+
+        try {
+            logger = new PrintWriter(
+                    (new FileOutputStream( new File("gameLog.txt"), true)));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setRoundForPlay(){
@@ -37,6 +46,9 @@ public class Engine {
         do{
             iterate();
         }while(roundState.turnState != RoundState.TurnState.playerAWon && roundState.turnState != RoundState.TurnState.playerBWon);
+        logger.println(roundState.turnState);
+        logger.println("--------------------------------------------------------------");
+        logger.close();
     }
 
     public void iterate(){
@@ -53,6 +65,7 @@ public class Engine {
             roundState.spaceOfPlayerB.hand.add(drawRandomCardFromDeck());
             decision = currentPlayer.makeDecision(roundState, DecisionType.getDecisions(roundState.spaceOfPlayerB.hand));
         }
+        logger.println(roundState.spaceOfPlayerA.hand + " ; " + roundState.spaceOfPlayerB.hand + " ; " + roundState.turnState + ": " + decision);
 
         makeMove(decision);
 
@@ -230,7 +243,6 @@ public class Engine {
     }
 
     public void saveResults(){
-
     }
 
 }

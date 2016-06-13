@@ -12,7 +12,7 @@ public class RandomAlgorithm implements Player {
 
     @Override
     public DecisionType makeDecision(RoundState roundState, List<DecisionType> decisionList) {
-        decisionList.remove( DecisionType.guard_princess );
+        decisionList.remove( DecisionType.princessPlay );
         Collections.shuffle(decisionList);
         return decisionList.get(0);
     }
