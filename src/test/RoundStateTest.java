@@ -1,4 +1,4 @@
-import dmalarczyk.masterThesis.gameEngine.RoundState;
+import dmalarczyk.masterThesis.model.RoundState;
 import dmalarczyk.masterThesis.model.CardType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,16 +40,4 @@ public class RoundStateTest {
         assertEquals(nrOfCards , roundState.deck.stream().filter( cardType -> cardType == this.cardType ).collect(Collectors.toList()).size());
     }
 
-    @Test
-    public void setRoundForPlay_isValid(){
-        RoundState roundState = new RoundState();
-        roundState.setRoundForPlay();
-
-        assertEquals(0, roundState.discardedDeckPlayerA.size());
-        assertEquals(0, roundState.discardedDeckPlayerB.size());
-        assertEquals(3, roundState.openDiscardedCards.size());
-        assertEquals(1, roundState.handPlayerA.size());
-        assertEquals(1, roundState.handPlayerB.size());
-        assertEquals(10, roundState.deck.size());
-    }
 }

@@ -15,6 +15,10 @@ public enum DecisionType {
     countess_defaultPlay,
     princessPlay;
 
+    public static ArrayList<DecisionType> getDecisions(ArrayList<CardType> hand){
+        return getDecisions(hand.get(0), hand.get(1));
+    }
+
     public static ArrayList<DecisionType> getDecisions(CardType firstCard, CardType secondCard){
         ArrayList<DecisionType>  decisionList = new ArrayList<>();
 
