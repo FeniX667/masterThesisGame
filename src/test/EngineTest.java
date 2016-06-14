@@ -16,10 +16,26 @@ public class EngineTest {
         engine.playerB = new RandomAlgorithm( engine.roundState.spaceOfPlayerB );
 
         engine.run();
-        engine.printCurrentProbabilityMap();
-        engine.close();
+        engine.closeGame();
+        // engine.printCurrentProbabilityMap();
 
-        assertTrue(engine.roundState.turnState == RoundState.TurnState.playerAWon || engine.roundState.turnState == RoundState.TurnState.playerBWon);
+        assertTrue(engine.roundState.turnState != RoundState.TurnState.playerA && engine.roundState.turnState != RoundState.TurnState.playerB );
+    }
+
+    @Test
+    public void playGameThousand(){
+        for( int i = 1000 ; i > 0 ; i--) {
+            Engine engine = new Engine();
+            engine.setRoundForPlay();
+            engine.playerA = new RandomAlgorithm(engine.roundState.spaceOfPlayerA);
+            engine.playerB = new RandomAlgorithm(engine.roundState.spaceOfPlayerB);
+
+            engine.run();
+            engine.closeGame();
+            // engine.printCurrentProbabilityMap();
+
+            assertTrue(engine.roundState.turnState != RoundState.TurnState.playerA && engine.roundState.turnState != RoundState.TurnState.playerB);
+        }
     }
 
     @Test

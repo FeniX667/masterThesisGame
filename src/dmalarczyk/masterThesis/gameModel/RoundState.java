@@ -5,7 +5,7 @@ import java.util.*;
 public class RoundState {
 
     public enum TurnState{
-        notStarted, playerA, playerB, playerAWon, playerBWon, draw
+        notStarted, playerA, playerB, playerAWon, playerBWon, playerAWonByCompare, playerBWonByCompare, draw
     }
 
     public ArrayList<CardType> deck;
