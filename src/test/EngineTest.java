@@ -1,6 +1,6 @@
 import dmalarczyk.masterThesis.gameEngine.Engine;
-import dmalarczyk.masterThesis.gameEngine.RandomAlgorithm;
-import dmalarczyk.masterThesis.model.RoundState;
+import dmalarczyk.masterThesis.playerAlgorithm.RandomAlgorithm;
+import dmalarczyk.masterThesis.gameModel.RoundState;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -12,10 +12,12 @@ public class EngineTest {
     public void playGame(){
         Engine engine = new Engine();
         engine.setRoundForPlay();
-        engine.playerA = new RandomAlgorithm();
-        engine.playerB = new RandomAlgorithm();
+        engine.playerA = new RandomAlgorithm( engine.roundState.spaceOfPlayerA );
+        engine.playerB = new RandomAlgorithm( engine.roundState.spaceOfPlayerB );
 
         engine.run();
+        engine.printCurrentProbabilityMap();
+        engine.close();
 
         assertTrue(engine.roundState.turnState == RoundState.TurnState.playerAWon || engine.roundState.turnState == RoundState.TurnState.playerBWon);
     }

@@ -1,4 +1,4 @@
-package dmalarczyk.masterThesis.model;
+package dmalarczyk.masterThesis.gameModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;

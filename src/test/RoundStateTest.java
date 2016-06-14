@@ -1,5 +1,5 @@
-import dmalarczyk.masterThesis.model.RoundState;
-import dmalarczyk.masterThesis.model.CardType;
+import dmalarczyk.masterThesis.gameModel.RoundState;
+import dmalarczyk.masterThesis.gameModel.CardType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

@@ -1,4 +1,4 @@
-package dmalarczyk.masterThesis.model;
+package dmalarczyk.masterThesis.gameModel;
 
 public enum CardType {
     guard, priest, baron, handmaid, prince, king, countess, princess;

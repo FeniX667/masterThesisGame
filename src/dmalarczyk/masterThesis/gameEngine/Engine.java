@@ -1,10 +1,11 @@
 package dmalarczyk.masterThesis.gameEngine;
 
 
-import dmalarczyk.masterThesis.model.CardType;
-import dmalarczyk.masterThesis.model.DecisionType;
-import dmalarczyk.masterThesis.model.PlayerSpace;
-import dmalarczyk.masterThesis.model.RoundState;
+import dmalarczyk.masterThesis.gameModel.CardType;
+import dmalarczyk.masterThesis.gameModel.DecisionType;
+import dmalarczyk.masterThesis.gameModel.PlayerSpace;
+import dmalarczyk.masterThesis.gameModel.RoundState;
+import dmalarczyk.masterThesis.playerAlgorithm.Player;
 
 import java.io.*;
 import java.util.Random;
@@ -48,6 +49,9 @@ public class Engine {
         }while(roundState.turnState != RoundState.TurnState.playerAWon && roundState.turnState != RoundState.TurnState.playerBWon);
         logger.println(roundState.turnState);
         logger.println("--------------------------------------------------------------");
+    }
+
+    public void close(){
         logger.close();
     }
 
@@ -67,9 +71,10 @@ public class Engine {
         }
         logger.println(roundState.spaceOfPlayerA.hand + " ; " + roundState.spaceOfPlayerB.hand + " ; " + roundState.turnState + ": " + decision);
 
+        currentPlayer.playerSpace.safetyFlag = false;
         makeMove(decision);
-
         roundState.switchState();
+
         iteration++;
     }
 
@@ -82,7 +87,6 @@ public class Engine {
             decisionMakerSpace = roundState.spaceOfPlayerB;
             opponentSpace = roundState.spaceOfPlayerA;
         }
-        decisionMakerSpace.safetyFlag = false;
 
         switch(decision){
             case guard_priest:
@@ -138,9 +142,10 @@ public class Engine {
 
     private void guardPlay(CardType guardChoice, PlayerSpace decisionMakerSpace, PlayerSpace opponentSpace){
         discardPlayedCard(decisionMakerSpace, CardType.guard);
-        if( opponentSpace.hand.contains(guardChoice)){
-            endGame(currentPlayer);
-        }
+        if( !opponentSpace.safetyFlag)
+            if( opponentSpace.hand.contains(guardChoice)){
+                endGame(currentPlayer);
+            }
     }
 
     private void priestPlay(PlayerSpace decisionMakerSpace) {
@@ -149,10 +154,12 @@ public class Engine {
 
     private void baronPlay(PlayerSpace decisionMakerSpace, PlayerSpace opponentSpace) {
         discardPlayedCard(decisionMakerSpace, CardType.baron);
-        if ( CardType.getStrength(decisionMakerSpace.hand.get(0)) > CardType.getStrength(opponentSpace.hand.get(0)) )
-            endGame(currentPlayer);
-        else if ( CardType.getStrength(decisionMakerSpace.hand.get(0)) < CardType.getStrength(opponentSpace.hand.get(0)) )
-            endGame(opponentPlayer);
+
+        if( !opponentSpace.safetyFlag)
+            if ( CardType.getStrength(decisionMakerSpace.hand.get(0)) > CardType.getStrength(opponentSpace.hand.get(0)) )
+                endGame(currentPlayer);
+            else if ( CardType.getStrength(decisionMakerSpace.hand.get(0)) < CardType.getStrength(opponentSpace.hand.get(0)) )
+                endGame(opponentPlayer);
     }
 
     private void handmaidPlay(PlayerSpace decisionMakerSpace) {
@@ -170,7 +177,7 @@ public class Engine {
             else{
                 decisionMakerSpace.hand.add(drawRandomCardFromDeck());
             }
-        }else{
+        }else if( !opponentSpace.safetyFlag){
             CardType princedCard = opponentSpace.hand.get(0);
             discardPlayedCard(opponentSpace, princedCard);
             if( princedCard == CardType.princess )
@@ -183,9 +190,11 @@ public class Engine {
 
     private void kingPlay(PlayerSpace decisionMakerSpace, PlayerSpace opponentSpace) {
         discardPlayedCard(decisionMakerSpace, CardType.king);
-        CardType secondCard = decisionMakerSpace.hand.remove(0);
-        decisionMakerSpace.hand.add(opponentSpace.hand.remove(0));
-        opponentSpace.hand.add(secondCard);
+        if( !opponentSpace.safetyFlag) {
+            CardType secondCard = decisionMakerSpace.hand.remove(0);
+            decisionMakerSpace.hand.add(opponentSpace.hand.remove(0));
+            opponentSpace.hand.add(secondCard);
+        }
     }
 
     private void countessPlay(PlayerSpace decisionMakerSpace ) {
@@ -223,21 +232,6 @@ public class Engine {
         return roundState.deck.remove(rnd.nextInt(roundState.deck.size()));
     }
 
-
-    public void copyRoundState(RoundState _round){
-        RoundState roundStateCopy = new RoundState();
-//        initVariables();
-//        deck =
-//        discardedDeckPlayerA = _round.discardedDeckPlayerA.clone();
-//        discardedDeckPlayerB = _round.discardedDeckPlayerB.clone();
-//        discardedOpen = _round.discardedDeckPlayerB.clone();
-//        safetyFlagPlayerA = _round.safetyFlagPlayerA;
-//        safetyFlagPlayerB = _round.safetyFlagPlayerB;
-//        handPlayerA = _round.handPlayerA;
-//        handPlayerB = _round.handPlayerB;
-//
-    }
-
     public void showResults(){
 
     }
@@ -245,4 +239,7 @@ public class Engine {
     public void saveResults(){
     }
 
+    public void printCurrentProbabilityMap() {
+        logger.print( roundState.getProbabilityMap() );
+    }
 }

@@ -1,5 +1,5 @@
-import dmalarczyk.masterThesis.model.CardType;
-import dmalarczyk.masterThesis.model.DecisionType;
+import dmalarczyk.masterThesis.gameModel.CardType;
+import dmalarczyk.masterThesis.gameModel.DecisionType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
