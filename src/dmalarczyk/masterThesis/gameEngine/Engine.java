@@ -260,7 +260,7 @@ public class Engine {
         return roundState.deck.remove(rnd.nextInt(roundState.deck.size()));
     }
 
-    public void printCurrentProbabilityMap() {
-        logger.println(roundState.getProbabilityMap());
+    public void printCurrentProbabilityMapForPlayer(PlayerSpace playerSpace) {
+        logger.println(roundState.getProbabilityMapForPlayer(playerSpace));
     }
 }

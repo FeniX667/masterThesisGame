@@ -16,7 +16,7 @@ public class GreedyAlgorithm extends Player {
     @Override
     public DecisionType makeDecision(RoundState uncertainRoundState, List<DecisionType> decisionList) {
         DecisionType finalDecision = null;
-        Map<CardType, Double> probabilityMap = uncertainRoundState.getProbabilityMap();
+        Map<CardType, Double> probabilityMap = uncertainRoundState.getProbabilityMapForPlayer(this.playerSpace);
 
         for( DecisionType decision : decisionList ){
             if ( decisionValue(decision, probabilityMap) > decisionValue(finalDecision, probabilityMap))
