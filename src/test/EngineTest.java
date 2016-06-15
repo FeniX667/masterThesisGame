@@ -1,7 +1,13 @@
 import dmalarczyk.masterThesis.gameEngine.Engine;
+import dmalarczyk.masterThesis.playerAlgorithm.GreedyAlgorithm;
 import dmalarczyk.masterThesis.playerAlgorithm.RandomAlgorithm;
 import dmalarczyk.masterThesis.gameModel.RoundState;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -14,6 +20,20 @@ public class EngineTest {
         engine.setRoundForPlay();
         engine.playerA = new RandomAlgorithm( engine.roundState.spaceOfPlayerA );
         engine.playerB = new RandomAlgorithm( engine.roundState.spaceOfPlayerB );
+
+        engine.run();
+        engine.closeGame();
+        // engine.printCurrentProbabilityMap();
+
+        assertTrue(engine.roundState.turnState != RoundState.TurnState.playerA && engine.roundState.turnState != RoundState.TurnState.playerB );
+    }
+
+    @Test
+    public void playGameGreedyVsRandom(){
+        Engine engine = new Engine();
+        engine.setRoundForPlay();
+        engine.playerA = new RandomAlgorithm( engine.roundState.spaceOfPlayerA );
+        engine.playerB = new GreedyAlgorithm( engine.roundState.spaceOfPlayerB );
 
         engine.run();
         engine.closeGame();
@@ -36,6 +56,43 @@ public class EngineTest {
 
             assertTrue(engine.roundState.turnState != RoundState.TurnState.playerA && engine.roundState.turnState != RoundState.TurnState.playerB);
         }
+    }
+
+    @Test
+    public void playGameThousandGreedyVsRandom() throws FileNotFoundException {
+
+        PrintWriter logger = new PrintWriter(
+                (new FileOutputStream( new File("simulationLog.txt"), true)));
+
+        int greedyWon = 0;
+        int randomWon = 0;
+        int draws = 0;
+        int wtfs = 0;
+
+        for( int i = 1000 ; i > 0 ; i--) {
+            Engine engine = new Engine();
+            engine.setRoundForPlay();
+            engine.playerA = new GreedyAlgorithm(engine.roundState.spaceOfPlayerA);
+            engine.playerB = new RandomAlgorithm(engine.roundState.spaceOfPlayerB);
+
+            engine.run();
+            engine.closeGame();
+            // engine.printCurrentProbabilityMap();
+            RoundState.TurnState result = engine.roundState.turnState;
+            if( result == RoundState.TurnState.playerAWon || result == RoundState.TurnState.playerAWonByCompare)
+                greedyWon++;
+            else if( result == RoundState.TurnState.playerBWon || result == RoundState.TurnState.playerBWonByCompare)
+                randomWon++;
+            else if( result == RoundState.TurnState.draw )
+                draws++;
+            else
+                wtfs++;
+        }
+
+        logger.println("Greedy: " + greedyWon + "; Random: " + randomWon + "; Draws: " + draws + "; Wtfs: " + wtfs);
+        logger.close();
+
+        assertTrue(greedyWon > randomWon);
     }
 
     @Test

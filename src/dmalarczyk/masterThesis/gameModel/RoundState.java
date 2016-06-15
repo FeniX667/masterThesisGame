@@ -87,7 +87,7 @@ public class RoundState {
         HashMap<CardType, Double> probabilityMap = new HashMap<>();
         HashMap<CardType, Double> occurenceMap = new HashMap<>();
 
-        for(CardType cardType : new HashSet<>(allHiddenCards)){
+        for(CardType cardType : EnumSet.allOf(CardType.class)){
             Double tmpCount = new Double(0.0);
             for(CardType card : allHiddenCards) {
                 if (card == cardType) {

@@ -28,4 +28,10 @@ public class PlayerSpace {
         randomSpace.hand.add(randomCard);
         return randomSpace;
     }
+
+    public CardType getSecondCardInHand(CardType firstCard){
+        ArrayList<CardType> tmpHand = new ArrayList<>(hand);
+        tmpHand.remove(firstCard);
+        return tmpHand.get(0);
+    }
 }
