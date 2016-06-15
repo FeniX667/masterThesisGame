@@ -78,20 +78,36 @@ public class MinMaxAlgorithm extends Player {
 
     private double reactionLossChance(RoundState roundState, CardType droppedCard) {
         Map<Pair<CardType, CardType>, Double> opponentHandProbabilityMap = getOpponentHandProbabilityMap(roundState);
-        double reactionLossChance = 0.0;
+        Map<DecisionType, Double> lossProbabilityMap = new HashMap<>();
         if( opponentHandProbabilityMap == null || opponentHandProbabilityMap.isEmpty() )
             return reactionLossChance;
 
         List<DecisionType> greedyReactions = new ArrayList<>();
 
         for( Pair<CardType, CardType> opponentHand : opponentHandProbabilityMap.keySet()){
-            DecisionType.getDecisions(opponentHand.getKey(), opponentHand.getValue());
+            List<DecisionType> opponentDecisions = DecisionType.getDecisions(opponentHand.getKey(), opponentHand.getValue());
             CardType mySecondCard = playerSpace.getSecondCardInHand(droppedCard);
-            List<CardType> cardsHiddenForEnemy =
-            roundState.getAllHiddenCards()
-            greedyReactions.add( maxValue(), myHandProbablityMap(droppedCard) );
+
+            List<CardType> cardsHiddenForEnemy = roundState.getHiddenCards();
+            cardsHiddenForEnemy.remove(opponentHand.getKey());
+            cardsHiddenForEnemy.remove(opponentHand.getValue());
+            cardsHiddenForEnemy.remove(mySecondCard);
+            Map<CardType, Double> opponentProbabilityMap = RoundState.getProbabilityMap(cardsHiddenForEnemy);
+
+            DecisionType opponentDecision = null;
+
+            for( DecisionType decision : opponentDecisions ){
+                if ( maxValue(decision, opponentProbabilityMap) > maxValue(opponentDecision, opponentProbabilityMap))
+                    opponentDecision = decision;
+            }
+            greedyReactions.add( opponentDecision );
         }
 
+        for( DecisionType decision: greedyReactions  ){
+            // od 6 punktu greedyReactions.add
+        }
+
+        double reactionLossChance = 0.0;
         return reactionLossChance;
     }
 

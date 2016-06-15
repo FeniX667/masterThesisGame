@@ -72,14 +72,6 @@ public class RoundState {
         return roundStateCopy;
     }
 
-    private List<CardType> getAllHiddenCards(PlayerSpace opponentSpace){
-        List<CardType> allHiddenCards = new ArrayList<>();
-        allHiddenCards.addAll( deck );
-        allHiddenCards.addAll( opponentSpace.hand );
-        allHiddenCards.add( hiddenDiscardedCard );
-
-        return  allHiddenCards;
-    }
 
     public Map<CardType, Double> getProbabilityMapForPlayer(PlayerSpace playerSpace){
         List<CardType> allHiddenCards;
@@ -93,6 +85,42 @@ public class RoundState {
         for(CardType cardType : EnumSet.allOf(CardType.class)){
             Double tmpCount = new Double(0.0);
             for(CardType card : allHiddenCards) {
+                if (card == cardType) {
+                    tmpCount+=1.0;
+                }
+            }
+            probabilityMap.put(cardType, tmpCount / nrOfHiddenCards );
+        }
+
+        return probabilityMap;
+    }
+
+    public List<CardType> getAllHiddenCards(PlayerSpace opponentSpace){
+        List<CardType> allHiddenCards = new ArrayList<>();
+        allHiddenCards.addAll( deck );
+        allHiddenCards.addAll( opponentSpace.hand );
+        allHiddenCards.add( hiddenDiscardedCard );
+
+        return  allHiddenCards;
+    }
+
+    public List<CardType> getHiddenCards(){
+        List<CardType> allHiddenCards = new ArrayList<>();
+        allHiddenCards.addAll( deck );
+        allHiddenCards.addAll( spaceOfPlayerA.hand );
+        allHiddenCards.addAll( spaceOfPlayerB.hand );
+        allHiddenCards.add( hiddenDiscardedCard );
+
+        return  allHiddenCards;
+    }
+
+    public static Map<CardType, Double> getProbabilityMap(List<CardType> cardList){
+        Double nrOfHiddenCards = new Double(cardList.size());
+        HashMap<CardType, Double> probabilityMap = new HashMap<>();
+
+        for(CardType cardType : EnumSet.allOf(CardType.class)){
+            Double tmpCount = new Double(0.0);
+            for(CardType card : cardList) {
                 if (card == cardType) {
                     tmpCount+=1.0;
                 }
