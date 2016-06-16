@@ -13,6 +13,11 @@ public class RandomAlgorithm extends Player {
     }
 
     @Override
+    public String name() {
+        return "Random";
+    }
+
+    @Override
     public DecisionType makeDecision(RoundState roundState, List<DecisionType> decisionList) {
         decisionList.remove( DecisionType.princessPlay );
         Collections.shuffle(decisionList);

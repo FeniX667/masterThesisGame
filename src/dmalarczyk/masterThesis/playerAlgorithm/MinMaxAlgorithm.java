@@ -15,6 +15,11 @@ public class MinMaxAlgorithm extends Player {
     }
 
     @Override
+    public String name() {
+        return "MiniMax";
+    }
+
+    @Override
     public DecisionType makeDecision(RoundState uncertainRoundState, List<DecisionType> decisionList) {
         DecisionType finalDecision = null;
         Map<CardType, Double> probabilityMap = uncertainRoundState.getProbabilityMapForPlayer(this.playerSpace);
@@ -78,36 +83,68 @@ public class MinMaxAlgorithm extends Player {
 
     private double reactionLossChance(RoundState roundState, CardType droppedCard) {
         Map<Pair<CardType, CardType>, Double> opponentHandProbabilityMap = getOpponentHandProbabilityMap(roundState);
-        Map<DecisionType, Double> lossProbabilityMap = new HashMap<>();
+        Map<Pair<CardType, CardType>, Double> lossProbabilityMap = new HashMap<>();
+        double reactionLossChance = 0.0;
         if( opponentHandProbabilityMap == null || opponentHandProbabilityMap.isEmpty() )
             return reactionLossChance;
 
-        List<DecisionType> greedyReactions = new ArrayList<>();
 
         for( Pair<CardType, CardType> opponentHand : opponentHandProbabilityMap.keySet()){
-            List<DecisionType> opponentDecisions = DecisionType.getDecisions(opponentHand.getKey(), opponentHand.getValue());
-            CardType mySecondCard = playerSpace.getSecondCardInHand(droppedCard);
-
             List<CardType> cardsHiddenForEnemy = roundState.getHiddenCards();
+            CardType mySecondCard = playerSpace.getSecondCardInHand(droppedCard);
             cardsHiddenForEnemy.remove(opponentHand.getKey());
             cardsHiddenForEnemy.remove(opponentHand.getValue());
             cardsHiddenForEnemy.remove(mySecondCard);
+
             Map<CardType, Double> opponentProbabilityMap = RoundState.getProbabilityMap(cardsHiddenForEnemy);
+            List<DecisionType> opponentDecisions = DecisionType.getDecisions(opponentHand.getKey(), opponentHand.getValue());
 
             DecisionType opponentDecision = null;
-
             for( DecisionType decision : opponentDecisions ){
-                if ( maxValue(decision, opponentProbabilityMap) > maxValue(opponentDecision, opponentProbabilityMap))
+                if ( maxValue(decision, opponentProbabilityMap) >= maxValue(opponentDecision, opponentProbabilityMap))
                     opponentDecision = decision;
             }
-            greedyReactions.add( opponentDecision );
+
+            switch (opponentDecision){
+                case guard_priest:
+                    lossProbabilityMap.put(opponentHand, opponentHandProbabilityMap.get(opponentHand) * maxValue(opponentDecision, opponentProbabilityMap) - 1.08  );
+                    break;
+                case guard_baron:
+                    lossProbabilityMap.put(opponentHand, opponentHandProbabilityMap.get(opponentHand) * maxValue(opponentDecision, opponentProbabilityMap) - 1.08  );
+                    break;
+                case guard_handmaid:
+                    lossProbabilityMap.put(opponentHand, opponentHandProbabilityMap.get(opponentHand) * maxValue(opponentDecision, opponentProbabilityMap) - 1.08  );
+                    break;
+                case guard_prince:
+                    lossProbabilityMap.put(opponentHand, opponentHandProbabilityMap.get(opponentHand) * maxValue(opponentDecision, opponentProbabilityMap) - 1.08  );
+                    break;
+                case guard_king:
+                    lossProbabilityMap.put(opponentHand, opponentHandProbabilityMap.get(opponentHand) * maxValue(opponentDecision, opponentProbabilityMap) - 1.08  );
+                    break;
+                case guard_countess:
+                    lossProbabilityMap.put(opponentHand, opponentHandProbabilityMap.get(opponentHand) * maxValue(opponentDecision, opponentProbabilityMap) - 1.08  );
+                    break;
+                case guard_princess:
+                    lossProbabilityMap.put(opponentHand, opponentHandProbabilityMap.get(opponentHand) * maxValue(opponentDecision, opponentProbabilityMap) - 1.08  );
+                    break;
+                case baronPlay:
+                    CardType opponentSecondCard = opponentHand.getKey() == CardType.baron ? opponentHand.getKey() : opponentHand.getValue();
+                    lossProbabilityMap.put(opponentHand, opponentHandProbabilityMap.get(opponentHand) * (CardType.getStrength(mySecondCard) > CardType.getStrength(opponentSecondCard) ? 1.0 : 0.0) );
+                    break;
+                case prince_onOpponent:
+                    lossProbabilityMap.put(opponentHand, opponentHandProbabilityMap.get(opponentHand) * (mySecondCard == CardType.princess ? 1.0 : 0.0) );
+                    break;
+                default:
+                    lossProbabilityMap.put(opponentHand, opponentHandProbabilityMap.get(opponentHand) * 0 );
+                    break;
+
+            }
         }
 
-        for( DecisionType decision: greedyReactions  ){
-            // od 6 punktu greedyReactions.add
+        for(Pair<CardType, CardType> hand : lossProbabilityMap.keySet()){
+            reactionLossChance += lossProbabilityMap.get(hand);
         }
 
-        double reactionLossChance = 0.0;
         return reactionLossChance;
     }
 

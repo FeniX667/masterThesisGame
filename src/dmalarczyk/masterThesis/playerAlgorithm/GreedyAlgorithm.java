@@ -14,6 +14,11 @@ public class GreedyAlgorithm extends Player {
     }
 
     @Override
+    public String name(){
+        return "Greedy";
+    }
+
+    @Override
     public DecisionType makeDecision(RoundState uncertainRoundState, List<DecisionType> decisionList) {
         DecisionType finalDecision = null;
         Map<CardType, Double> probabilityMap = uncertainRoundState.getProbabilityMapForPlayer(this.playerSpace);

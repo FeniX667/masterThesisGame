@@ -5,6 +5,7 @@ import dmalarczyk.masterThesis.gameModel.RoundState;
 
 public class GameStatistics {
     public int endingRound;
-    public RoundState.TurnState howGameEnded;
+    public RoundState.Winner winner;
+    public boolean isWinByComparison;
     public DecisionType winningMove;
 }

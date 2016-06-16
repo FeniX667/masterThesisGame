@@ -5,31 +5,42 @@ import java.util.*;
 public class RoundState {
 
     public enum TurnState{
-        notStarted, playerA, playerB, playerAWon, playerBWon, playerAWonByCompare, playerBWonByCompare, draw
+        notStarted, firstPlayer, secondPlayer, ended
     }
 
+    public enum Winner{
+        none, firstPlayer, secondPlayer
+    }
+
+    Random rnd;
+
     public ArrayList<CardType> deck;
-    public PlayerSpace spaceOfPlayerA;
-    public PlayerSpace spaceOfPlayerB;
+    public PlayerSpace spaceOfFirstPlayer;
+    public PlayerSpace spaceOfSecondPlayer;
     public ArrayList<CardType> openDiscardedCards;
     public CardType hiddenDiscardedCard;
 
     public TurnState turnState;
+    public Winner winner;
+    public boolean winByComparison;
 
     public RoundState(){
         initVariables();
-        initDeck();
+        initDecks();
     }
 
     private void initVariables(){
         deck = new ArrayList<>();
-        spaceOfPlayerA = new PlayerSpace();
-        spaceOfPlayerB = new PlayerSpace();
+        spaceOfFirstPlayer = new PlayerSpace();
+        spaceOfSecondPlayer = new PlayerSpace();
         openDiscardedCards = new ArrayList<>();
         turnState = TurnState.notStarted;
+        rnd = new Random();
+        winner = Winner.none;
+        winByComparison = false;
     }
 
-    private void initDeck(){
+    private void initDecks(){
         deck.addAll(
                 Arrays.asList(CardType.guard, CardType.guard, CardType.guard, CardType.guard, CardType.guard,
                         CardType.priest, CardType.priest,
@@ -42,20 +53,27 @@ public class RoundState {
                 )
         );
         Collections.shuffle(deck);
+
+        hiddenDiscardedCard = drawCardFromDeck() ;
+        for(int i=3 ; i!=0 ; i--){
+            openDiscardedCards.add( drawCardFromDeck() );
+        }
+
+        spaceOfFirstPlayer.hand.add( drawCardFromDeck() );
+        spaceOfSecondPlayer.hand.add( drawCardFromDeck() );
     }
 
     public void switchState(){
-        if (turnState == TurnState.playerA){
-            turnState = RoundState.TurnState.playerB;
+        if (turnState == TurnState.firstPlayer){
+            turnState = TurnState.secondPlayer;
         }
-        else if (turnState == TurnState.playerB){
-            turnState = RoundState.TurnState.playerA;
+        else if (turnState == TurnState.secondPlayer){
+            turnState = TurnState.firstPlayer;
         }
         else if (turnState == TurnState.notStarted){
-            turnState = RoundState.TurnState.playerA;
+            turnState = TurnState.firstPlayer;
         }
     }
-
 
     public RoundState copyRoundState(PlayerSpace unknownPlayerSpace){
         Random rnd = new Random();
@@ -63,9 +81,9 @@ public class RoundState {
 
         RoundState roundStateCopy = new RoundState();
 
-        roundStateCopy.spaceOfPlayerA = new PlayerSpace( spaceOfPlayerA );
+        roundStateCopy.spaceOfFirstPlayer = new PlayerSpace(spaceOfFirstPlayer);
         roundStateCopy.openDiscardedCards = new ArrayList<>(openDiscardedCards);
-        roundStateCopy.spaceOfPlayerB = spaceOfPlayerB.hiddenClone( allHiddenCards.remove(rnd.nextInt(deck.size())), spaceOfPlayerB );
+        roundStateCopy.spaceOfSecondPlayer = spaceOfSecondPlayer.hiddenClone( allHiddenCards.remove(rnd.nextInt(deck.size())), spaceOfSecondPlayer);
         roundStateCopy.hiddenDiscardedCard = allHiddenCards.remove( rnd.nextInt(deck.size()) );
         roundStateCopy.deck.addAll(allHiddenCards);
 
@@ -73,12 +91,27 @@ public class RoundState {
     }
 
 
+    public void drawCardForPlayerSpace(PlayerSpace playerSpace){
+        boolean added = playerSpace == spaceOfFirstPlayer ? spaceOfFirstPlayer.hand.add(drawCardFromDeck()) : spaceOfSecondPlayer.hand.add(drawCardFromDeck());
+    }
+
+    private CardType drawCardFromDeck(){
+        if( deck.size() == 0){
+            CardType hiddenCard = hiddenDiscardedCard;
+            hiddenDiscardedCard = null;
+            turnState = TurnState.ended;
+            return hiddenCard;
+        }
+
+        return deck.remove(rnd.nextInt(deck.size()));
+    }
+
     public Map<CardType, Double> getProbabilityMapForPlayer(PlayerSpace playerSpace){
         List<CardType> allHiddenCards;
-        if( playerSpace == spaceOfPlayerA )
-            allHiddenCards = getAllHiddenCards(spaceOfPlayerB);
+        if( playerSpace == spaceOfFirstPlayer)
+            allHiddenCards = getAllHiddenCards(spaceOfSecondPlayer);
         else
-            allHiddenCards = getAllHiddenCards(spaceOfPlayerB);
+            allHiddenCards = getAllHiddenCards(spaceOfSecondPlayer);
         Double nrOfHiddenCards = new Double(allHiddenCards.size());
         HashMap<CardType, Double> probabilityMap = new HashMap<>();
 
@@ -107,8 +140,8 @@ public class RoundState {
     public List<CardType> getHiddenCards(){
         List<CardType> allHiddenCards = new ArrayList<>();
         allHiddenCards.addAll( deck );
-        allHiddenCards.addAll( spaceOfPlayerA.hand );
-        allHiddenCards.addAll( spaceOfPlayerB.hand );
+        allHiddenCards.addAll( spaceOfFirstPlayer.hand );
+        allHiddenCards.addAll( spaceOfSecondPlayer.hand );
         allHiddenCards.add( hiddenDiscardedCard );
 
         return  allHiddenCards;

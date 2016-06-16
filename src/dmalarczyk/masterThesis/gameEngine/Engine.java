@@ -12,8 +12,8 @@ import java.util.Random;
 
 public class Engine {
     public RoundState roundState;
-    public Player playerA;
-    public Player playerB;
+    public Player firstPlayer;
+    public Player secondPlayer;
     public Player currentPlayer, opponentPlayer;
     public GameStatistics statistics ;
     public int iteration;
@@ -28,28 +28,27 @@ public class Engine {
 
         try {
             logger = new PrintWriter(
-                    (new FileOutputStream( new File("gameLog.txt"), true)));
+                    (new FileOutputStream(new File("gameLog.txt"), true)));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public void setRoundForPlay(){
-        roundState.hiddenDiscardedCard = drawRandomCardFromDeck() ;
-        for(int i=3 ; i!=0 ; i--){
-            roundState.openDiscardedCards.add( drawRandomCardFromDeck() );
-        }
-
-        roundState.spaceOfPlayerA.hand.add( drawRandomCardFromDeck() );
-        roundState.spaceOfPlayerB.hand.add( drawRandomCardFromDeck() );
-    }
-
     public void run(){
         roundState.switchState();
+        logger.println(firstPlayer.name() + " vs. " + secondPlayer.name());
+        logger.println("Discarded cards: " + roundState.openDiscardedCards + ". Hidden card: " + roundState.hiddenDiscardedCard);
         do{
             iterate();
-        }while(roundState.turnState == RoundState.TurnState.playerA || roundState.turnState == RoundState.TurnState.playerB);
-        logger.println(statistics.howGameEnded + " in round " + statistics.endingRound + " with " + statistics.winningMove);
+        }while(roundState.turnState != RoundState.TurnState.ended);
+
+        logger.print(statistics.winner + " won in round " + statistics.endingRound + ". ");
+        if( statistics.isWinByComparison )
+            logger.println("Win by comparison.");
+        else
+            logger.println("Winning move: " + statistics.winningMove);
+
+        logger.println("Cards remaining in deck: " + roundState.deck );
     }
 
     public void closeGame(){
@@ -60,28 +59,26 @@ public class Engine {
     public void iterate(){
         DecisionType decision;
 
-
-
-        if (roundState.turnState == RoundState.TurnState.playerA){
-            currentPlayer = playerA;
-            opponentPlayer = playerB;
-            roundState.spaceOfPlayerA.hand.add(drawRandomCardFromDeck());
-            decision = currentPlayer.makeDecision(roundState, DecisionType.getDecisions(roundState.spaceOfPlayerA.hand));
+        if (roundState.turnState == RoundState.TurnState.firstPlayer){
+            currentPlayer = firstPlayer;
+            opponentPlayer = secondPlayer;
         }
-        else{
-            currentPlayer = playerB;
-            opponentPlayer = playerA;
-            roundState.spaceOfPlayerB.hand.add(drawRandomCardFromDeck());
-            decision = currentPlayer.makeDecision(roundState, DecisionType.getDecisions(roundState.spaceOfPlayerB.hand));
+        else if (roundState.turnState == RoundState.TurnState.secondPlayer){
+            currentPlayer = secondPlayer;
+            opponentPlayer = firstPlayer;
         }
-        logger.println(roundState.spaceOfPlayerA.hand + " ; " + roundState.spaceOfPlayerB.hand + " ; " + roundState.turnState + ": " + decision);
+
+        currentPlayer.playerSpace.isSafe = false;
+        roundState.drawCardForPlayerSpace(currentPlayer.playerSpace);
+        decision = currentPlayer.makeDecision(roundState, DecisionType.getDecisions(currentPlayer.playerSpace.hand));
+
+        logger.println(iteration + " " + roundState.spaceOfFirstPlayer.hand + " ; " + roundState.spaceOfSecondPlayer.hand + " ; " + roundState.turnState + ": " + decision);
+
+        makeMove(decision);
         statistics.winningMove = decision;
 
-        currentPlayer.playerSpace.safetyFlag = false;
-        makeMove(decision);
-
         if( roundState.deck.size() == 0 ){
-            endGame( null );
+            endGame(null);
             return;
         }
 
@@ -92,12 +89,12 @@ public class Engine {
 
     public void makeMove(DecisionType decision){
         PlayerSpace decisionMakerSpace, opponentSpace;
-        if(currentPlayer == playerA){
-            decisionMakerSpace = roundState.spaceOfPlayerA;
-            opponentSpace = roundState.spaceOfPlayerB;
+        if(currentPlayer == firstPlayer){
+            decisionMakerSpace = roundState.spaceOfFirstPlayer;
+            opponentSpace = roundState.spaceOfSecondPlayer;
         }else{
-            decisionMakerSpace = roundState.spaceOfPlayerB;
-            opponentSpace = roundState.spaceOfPlayerA;
+            decisionMakerSpace = roundState.spaceOfSecondPlayer;
+            opponentSpace = roundState.spaceOfFirstPlayer;
         }
 
         switch(decision){
@@ -154,10 +151,8 @@ public class Engine {
 
     private void guardPlay(CardType guardChoice, PlayerSpace decisionMakerSpace, PlayerSpace opponentSpace){
         discardPlayedCard(decisionMakerSpace, CardType.guard);
-        if( !opponentSpace.safetyFlag)
-            if( opponentSpace.hand.contains(guardChoice)){
+        if( !opponentSpace.isSafe && opponentSpace.hand.contains(guardChoice))
                 endGame(currentPlayer);
-            }
     }
 
     private void priestPlay(PlayerSpace decisionMakerSpace) {
@@ -167,7 +162,7 @@ public class Engine {
     private void baronPlay(PlayerSpace decisionMakerSpace, PlayerSpace opponentSpace) {
         discardPlayedCard(decisionMakerSpace, CardType.baron);
 
-        if( !opponentSpace.safetyFlag)
+        if( !opponentSpace.isSafe)
             if ( CardType.getStrength(decisionMakerSpace.hand.get(0)) > CardType.getStrength(opponentSpace.hand.get(0)) )
                 endGame(currentPlayer);
             else if ( CardType.getStrength(decisionMakerSpace.hand.get(0)) < CardType.getStrength(opponentSpace.hand.get(0)) )
@@ -176,7 +171,7 @@ public class Engine {
 
     private void handmaidPlay(PlayerSpace decisionMakerSpace) {
         discardPlayedCard(decisionMakerSpace, CardType.handmaid);
-        decisionMakerSpace.safetyFlag=true;
+        decisionMakerSpace.isSafe = true;
     }
 
     private void princePlay(PlayerSpace decisionMakerSpace, PlayerSpace opponentSpace) {
@@ -187,30 +182,22 @@ public class Engine {
             if( princedCard == CardType.princess )
                 endGame(opponentPlayer);
             else{
-                if( roundState.deck.size() == 0 ){
-                    endGame( null );
-                }
-                else
-                    decisionMakerSpace.hand.add(drawRandomCardFromDeck());
+                roundState.drawCardForPlayerSpace(decisionMakerSpace);
             }
-        }else if( !opponentSpace.safetyFlag){
+        }else if( !opponentSpace.isSafe){
             CardType princedCard = opponentSpace.hand.get(0);
             discardPlayedCard(opponentSpace, princedCard);
             if( princedCard == CardType.princess )
                 endGame(currentPlayer);
             else{
-                if( roundState.deck.size() == 0 ){
-                    endGame( null );
-                }
-                else
-                    opponentSpace.hand.add(drawRandomCardFromDeck());
+                roundState.drawCardForPlayerSpace(opponentSpace);
             }
         }
     }
 
     private void kingPlay(PlayerSpace decisionMakerSpace, PlayerSpace opponentSpace) {
         discardPlayedCard(decisionMakerSpace, CardType.king);
-        if( !opponentSpace.safetyFlag) {
+        if( !opponentSpace.isSafe) {
             CardType secondCard = decisionMakerSpace.hand.remove(0);
             decisionMakerSpace.hand.add(opponentSpace.hand.remove(0));
             opponentSpace.hand.add(secondCard);
@@ -227,37 +214,34 @@ public class Engine {
     }
 
     private void endGame(Player winner) {
+        roundState.turnState = RoundState.TurnState.ended;
         if( winner == null ){
-            int playerAStrength = roundState.spaceOfPlayerA.hand.size() == 0 ? 0 : CardType.getStrength(roundState.spaceOfPlayerA.hand.get(0));
-            int playerBStrength = roundState.spaceOfPlayerB.hand.size() == 0 ? 0 : CardType.getStrength(roundState.spaceOfPlayerB.hand.get(0));
-            if( playerAStrength > playerBStrength)
-                roundState.turnState = RoundState.TurnState.playerAWonByCompare;
-            else if( playerAStrength < playerBStrength)
-                roundState.turnState = RoundState.TurnState.playerBWonByCompare;
+            int playerAStrength = CardType.getStrength(roundState.spaceOfFirstPlayer.hand.get(0)) ;
+            int playerBStrength = CardType.getStrength(roundState.spaceOfSecondPlayer.hand.get(0)) ;
+            if( playerAStrength > playerBStrength){
+                roundState.winner = RoundState.Winner.firstPlayer;
+                roundState.winByComparison = true;
+            }
+            else if( playerAStrength < playerBStrength){
+                roundState.winner = RoundState.Winner.secondPlayer;
+                roundState.winByComparison = true;
+            }
             else
-                roundState.turnState = RoundState.TurnState.draw;
+                roundState.winner = RoundState.Winner.none;
         }
 
-        else if( winner == playerA )
-            roundState.turnState = RoundState.TurnState.playerAWon;
+        else if( winner == firstPlayer)
+            roundState.winner = RoundState.Winner.firstPlayer;
         else
-            roundState.turnState = RoundState.TurnState.playerBWon;
+            roundState.winner = RoundState.Winner.secondPlayer;
 
         statistics.endingRound = iteration;
-        statistics.howGameEnded = roundState.turnState;
+        statistics.winner = roundState.winner;
     }
 
     private void discardPlayedCard(PlayerSpace space, CardType cardType){
         space.hand.remove(cardType);
         space.discardedDeck.add(cardType);
-    }
-
-    private CardType drawRandomCardFromDeck(){
-        if( roundState.deck.size() == 0 ){
-            endGame( null );
-        }
-
-        return roundState.deck.remove(rnd.nextInt(roundState.deck.size()));
     }
 
     public void printCurrentProbabilityMapForPlayer(PlayerSpace playerSpace) {
