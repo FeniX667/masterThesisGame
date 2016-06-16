@@ -1,5 +1,7 @@
 package dmalarczyk.masterThesis.gameModel;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 public class RoundState {
@@ -77,7 +79,8 @@ public class RoundState {
 
     public RoundState copyRoundState(PlayerSpace unknownPlayerSpace){
         Random rnd = new Random();
-        List<CardType> allHiddenCards = getAllHiddenCards(unknownPlayerSpace);
+        List<CardType> allHiddenCards = getAllHiddenCards();
+        allHiddenCards.remove(unknownPlayerSpace.hand);
 
         RoundState roundStateCopy = new RoundState();
 
@@ -107,11 +110,12 @@ public class RoundState {
     }
 
     public Map<CardType, Double> getProbabilityMapForPlayer(PlayerSpace playerSpace){
-        List<CardType> allHiddenCards;
+        List<CardType> allHiddenCards = getAllHiddenCards();
+
         if( playerSpace == spaceOfFirstPlayer)
-            allHiddenCards = getAllHiddenCards(spaceOfSecondPlayer);
+            allHiddenCards.remove(spaceOfSecondPlayer);
         else
-            allHiddenCards = getAllHiddenCards(spaceOfSecondPlayer);
+            allHiddenCards.remove(spaceOfFirstPlayer);
         Double nrOfHiddenCards = new Double(allHiddenCards.size());
         HashMap<CardType, Double> probabilityMap = new HashMap<>();
 
@@ -122,16 +126,41 @@ public class RoundState {
                     tmpCount+=1.0;
                 }
             }
-            probabilityMap.put(cardType, tmpCount / nrOfHiddenCards );
+            probabilityMap.put(cardType, round(tmpCount / nrOfHiddenCards) );
         }
 
         return probabilityMap;
     }
 
-    public List<CardType> getAllHiddenCards(PlayerSpace opponentSpace){
+
+    public static Map<CardType, Double> getProbabilityMap(List<CardType> cardList){
+        Double nrOfHiddenCards = new Double(cardList.size());
+        HashMap<CardType, Double> probabilityMap = new HashMap<>();
+
+        for(CardType cardType : EnumSet.allOf(CardType.class)){
+            Double tmpCount = new Double(0.0);
+            for(CardType card : cardList) {
+                if (card == cardType) {
+                    tmpCount+=1.0;
+                }
+            }
+            probabilityMap.put(cardType, round(tmpCount / nrOfHiddenCards) );
+        }
+
+        return probabilityMap;
+    }
+
+    private static double round(double value) {
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+
+    public List<CardType> getAllHiddenCards(){
         List<CardType> allHiddenCards = new ArrayList<>();
         allHiddenCards.addAll( deck );
-        allHiddenCards.addAll( opponentSpace.hand );
+        allHiddenCards.addAll( spaceOfFirstPlayer.hand );
+        allHiddenCards.addAll( spaceOfSecondPlayer.hand );
         allHiddenCards.add( hiddenDiscardedCard );
 
         return  allHiddenCards;
@@ -147,20 +176,5 @@ public class RoundState {
         return  allHiddenCards;
     }
 
-    public static Map<CardType, Double> getProbabilityMap(List<CardType> cardList){
-        Double nrOfHiddenCards = new Double(cardList.size());
-        HashMap<CardType, Double> probabilityMap = new HashMap<>();
 
-        for(CardType cardType : EnumSet.allOf(CardType.class)){
-            Double tmpCount = new Double(0.0);
-            for(CardType card : cardList) {
-                if (card == cardType) {
-                    tmpCount+=1.0;
-                }
-            }
-            probabilityMap.put(cardType, tmpCount / nrOfHiddenCards );
-        }
-
-        return probabilityMap;
-    }
 }

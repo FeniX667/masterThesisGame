@@ -20,7 +20,19 @@ public class Engine {
     Random rnd;
     PrintWriter logger;
 
-    public Engine(){
+    public Engine(Player firstPlayer, Player secondPlayer){
+        initVariables();
+        setPlayers(firstPlayer, secondPlayer);
+    }
+
+    public void setPlayers(Player firstPlayer, Player secondPlayer){
+        firstPlayer.setPlayerSpace(roundState.spaceOfFirstPlayer);
+        secondPlayer.setPlayerSpace(roundState.spaceOfSecondPlayer);
+        this.firstPlayer = firstPlayer;
+        this.secondPlayer = secondPlayer;
+    }
+
+    private void initVariables(){
         rnd = new Random();
         roundState = new RoundState();
         statistics = new GameStatistics();
@@ -32,11 +44,12 @@ public class Engine {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
     }
 
     public void run(){
         roundState.switchState();
-        logger.println(firstPlayer.name() + " vs. " + secondPlayer.name());
+        logger.println(firstPlayer.name + " vs. " + secondPlayer.name);
         logger.println("Discarded cards: " + roundState.openDiscardedCards + ". Hidden card: " + roundState.hiddenDiscardedCard);
         do{
             iterate();
@@ -49,11 +62,6 @@ public class Engine {
             logger.println("Winning move: " + statistics.winningMove);
 
         logger.println("Cards remaining in deck: " + roundState.deck );
-    }
-
-    public void closeGame(){
-        logger.println("--------------------------------------------------------------");
-        logger.close();
     }
 
     public void iterate(){
@@ -77,7 +85,7 @@ public class Engine {
         makeMove(decision);
         statistics.winningMove = decision;
 
-        if( roundState.deck.size() == 0 ){
+        if( roundState.deck.size() == 0 && roundState.turnState != RoundState.TurnState.ended){
             endGame(null);
             return;
         }
@@ -246,5 +254,10 @@ public class Engine {
 
     public void printCurrentProbabilityMapForPlayer(PlayerSpace playerSpace) {
         logger.println(roundState.getProbabilityMapForPlayer(playerSpace));
+    }
+
+    public void closeGame(){
+        logger.println("--------------------------------------------------------------");
+        logger.close();
     }
 }

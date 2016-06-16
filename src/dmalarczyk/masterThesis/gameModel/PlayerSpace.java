@@ -1,7 +1,5 @@
 package dmalarczyk.masterThesis.gameModel;
 
-import javafx.util.Pair;
-
 import java.util.ArrayList;
 
 public class PlayerSpace {
@@ -31,7 +29,7 @@ public class PlayerSpace {
         return randomSpace;
     }
 
-    public CardType getSecondCardInHand(CardType firstCard){
+    public CardType getTheOtherCardInHand(CardType firstCard){
         ArrayList<CardType> tmpHand = new ArrayList<>(hand);
         tmpHand.remove(firstCard);
         return tmpHand.get(0);

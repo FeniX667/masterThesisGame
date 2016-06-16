@@ -7,12 +7,17 @@ import dmalarczyk.masterThesis.gameModel.RoundState;
 import java.util.List;
 
 public abstract class Player {
-    Player(PlayerSpace playerSpace){
-        this.playerSpace = playerSpace;
+    public PlayerSpace playerSpace;
+    public String name;
+    public boolean isPlayerSpaceSet;
+
+    Player(){
+        isPlayerSpaceSet = false;
     }
 
-    public abstract String name();
-
     public abstract DecisionType makeDecision(RoundState roundState, List<DecisionType> decisionList);
-    public PlayerSpace playerSpace;
+
+    public void setPlayerSpace(PlayerSpace playerSpace){
+        this.playerSpace = playerSpace;
+    }
 }

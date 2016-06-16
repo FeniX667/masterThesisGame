@@ -1,10 +1,11 @@
 import dmalarczyk.masterThesis.gameEngine.Engine;
 import dmalarczyk.masterThesis.gameModel.CardType;
 import dmalarczyk.masterThesis.gameModel.DecisionType;
-import dmalarczyk.masterThesis.gameModel.PlayerSpace;
-import dmalarczyk.masterThesis.playerAlgorithm.GreedyAlgorithm;
-import dmalarczyk.masterThesis.playerAlgorithm.RandomAlgorithm;
 import dmalarczyk.masterThesis.gameModel.RoundState;
+import dmalarczyk.masterThesis.playerAlgorithm.GreedyAlgorithm;
+import dmalarczyk.masterThesis.playerAlgorithm.MinMaxAlgorithm;
+import dmalarczyk.masterThesis.playerAlgorithm.Player;
+import dmalarczyk.masterThesis.playerAlgorithm.RandomAlgorithm;
 import org.junit.Test;
 
 import java.io.File;
@@ -12,7 +13,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -21,10 +21,10 @@ public class EngineTest {
 
     @Test
     public void playGame(){
-        Engine engine = new Engine();
-        engine.firstPlayer = new RandomAlgorithm( engine.roundState.spaceOfFirstPlayer);
-        engine.secondPlayer = new RandomAlgorithm( engine.roundState.spaceOfSecondPlayer);
+        Player firstPlayer = new RandomAlgorithm();
+        Player secondPlayer = new RandomAlgorithm();
 
+        Engine engine = new Engine(firstPlayer, secondPlayer);
         engine.run();
         engine.closeGame();
         // engine.printCurrentProbabilityMap();
@@ -34,9 +34,10 @@ public class EngineTest {
 
     @Test
     public void guardPlayTest() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Engine engine = new Engine();
-        engine.firstPlayer = new RandomAlgorithm( engine.roundState.spaceOfFirstPlayer);
-        engine.secondPlayer = new RandomAlgorithm( engine.roundState.spaceOfSecondPlayer);
+        Player firstPlayer = new MinMaxAlgorithm();
+        Player secondPlayer = new GreedyAlgorithm();
+
+        Engine engine = new Engine(firstPlayer, secondPlayer);
 
         engine.roundState.spaceOfFirstPlayer.hand.clear();
         engine.roundState.spaceOfFirstPlayer.hand.add(CardType.handmaid);
@@ -53,19 +54,6 @@ public class EngineTest {
     }
 
     @Test
-    public void playGameGreedyVsRandom(){
-        Engine engine = new Engine();
-        engine.firstPlayer = new RandomAlgorithm( engine.roundState.spaceOfFirstPlayer);
-        engine.secondPlayer = new GreedyAlgorithm( engine.roundState.spaceOfSecondPlayer);
-
-        engine.run();
-        engine.closeGame();
-        // engine.printCurrentProbabilityMap();
-
-        assertEquals(RoundState.TurnState.ended, engine.roundState.turnState);
-    }
-
-    @Test
     public void playGameThousand() throws FileNotFoundException {
         PrintWriter logger = new PrintWriter(
                 (new FileOutputStream( new File("simulationLog.txt"), true)));
@@ -77,15 +65,14 @@ public class EngineTest {
         int wtfs = 0;
         int draws = 0;
 
+        Player firstPlayer = new MinMaxAlgorithm();
+        Player secondPlayer = new RandomAlgorithm();
+
         for( int i = 1000 ; i > 0 ; i--) {
-            Engine engine = new Engine();
-
-            engine.firstPlayer = new GreedyAlgorithm(engine.roundState.spaceOfFirstPlayer);
-            engine.secondPlayer = new RandomAlgorithm(engine.roundState.spaceOfSecondPlayer);
-
+            Engine engine = new Engine(firstPlayer, secondPlayer);
 
             engine.run();
-            engine.closeGame();
+            // engine.closeGame();
             // engine.printCurrentProbabilityMap();
             RoundState.Winner winner = engine.roundState.winner;
 
@@ -93,7 +80,7 @@ public class EngineTest {
                 firstPlayerWon++;
                 firstPlayerByComparison += engine.roundState.winByComparison ? 1 : 0;
             }
-            else if( winner == RoundState.Winner.firstPlayer ){
+            else if( winner == RoundState.Winner.secondPlayer ){
                 secondPlayerWon++;
                 secondPlayerByComparison += engine.roundState.winByComparison ? 1 : 0;
             }
@@ -103,7 +90,7 @@ public class EngineTest {
                 wtfs++;
         }
 
-        logger.println("firstPlayerWon" + firstPlayerWon +"/"+firstPlayerByComparison+ "; GreedyAlgorithm " + secondPlayerWon+"/"+ secondPlayerByComparison + "; Draws: " + draws + "; Wtfs: " + wtfs);
+        logger.println(firstPlayer.name + " vs. " + secondPlayer.name + " = " + firstPlayerWon +"/"+secondPlayerWon+ "; " + firstPlayerByComparison+"/"+ secondPlayerByComparison + "; Draws: " + draws + "; Wtfs: " + wtfs);
         logger.close();
 
         assertTrue(firstPlayerWon > secondPlayerWon);
@@ -111,7 +98,9 @@ public class EngineTest {
 
     @Test
     public void setRoundForPlay_isValid(){
-        Engine engine = new Engine();
+        Player firstPlayer = new RandomAlgorithm();
+        Player secondPlayer = new RandomAlgorithm();
+        Engine engine = new Engine(firstPlayer, secondPlayer);
         RoundState roundState = engine.roundState;
 
         assertEquals(0, roundState.spaceOfFirstPlayer.discardedDeck.size());
