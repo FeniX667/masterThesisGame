@@ -35,7 +35,7 @@ public class MinMaxAlgorithm extends Player {
 
     private double minValue(DecisionType decision, Map<CardType, Double> probabilityMap, RoundState roundState) {
         double minValue = 0.0;
-        if( decision == null || roundState.deck.size() ==0 )
+        if( decision == null || roundState.deck.size() <= 1 )
             return minValue;
 
         switch (decision) {
@@ -75,7 +75,7 @@ public class MinMaxAlgorithm extends Player {
             case countess_defaultPlay:
                 return reactionLossChance(roundState, CardType.countess);
             case princessPlay:
-                return 0;
+                return 10;
         }
 
         return minValue;
