@@ -31,6 +31,33 @@ public class RoundState {
         initDecks();
     }
 
+    public RoundState(RoundState roundState, PlayerSpace knownPlayerSpace){
+        List<CardType> allHiddenCards = roundState.getAllHiddenCardsAndHands();
+        knownPlayerSpace.hand.forEach(allHiddenCards::remove);
+        PlayerSpace opponentSpace;
+        if (roundState.spaceOfFirstPlayer == knownPlayerSpace)
+            opponentSpace = roundState.spaceOfSecondPlayer;
+        else
+            opponentSpace = roundState.spaceOfFirstPlayer;
+
+        initVariables();
+
+        deck.addAll(allHiddenCards);
+        spaceOfFirstPlayer.hand.addAll( knownPlayerSpace.hand );
+        spaceOfFirstPlayer.discardedDeck.addAll( knownPlayerSpace.discardedDeck );
+        spaceOfFirstPlayer.isSafe = knownPlayerSpace.isSafe;
+        spaceOfSecondPlayer.isSafe = opponentSpace.isSafe;
+        spaceOfSecondPlayer.discardedDeck.addAll( opponentSpace.discardedDeck );
+        for(int i=0 ; i<opponentSpace.hand.size() ; i++ ){
+            drawCardForPlayerSpace(spaceOfSecondPlayer);
+        }
+        openDiscardedCards.addAll(roundState.openDiscardedCards);
+        hiddenDiscardedCard = drawCardFromDeck();
+        turnState = roundState.turnState;
+        winner = roundState.winner;
+        winByComparison = roundState.winByComparison;
+    }
+
     private void initVariables(){
         deck = new ArrayList<>();
         spaceOfFirstPlayer = new PlayerSpace();
@@ -77,23 +104,6 @@ public class RoundState {
         }
     }
 
-    public RoundState copyRoundState(PlayerSpace unknownPlayerSpace){
-        Random rnd = new Random();
-        List<CardType> allHiddenCards = getAllHiddenCards();
-        allHiddenCards.remove(unknownPlayerSpace.hand);
-
-        RoundState roundStateCopy = new RoundState();
-
-        roundStateCopy.spaceOfFirstPlayer = new PlayerSpace(spaceOfFirstPlayer);
-        roundStateCopy.openDiscardedCards = new ArrayList<>(openDiscardedCards);
-        roundStateCopy.spaceOfSecondPlayer = spaceOfSecondPlayer.hiddenClone( allHiddenCards.remove(rnd.nextInt(deck.size())), spaceOfSecondPlayer);
-        roundStateCopy.hiddenDiscardedCard = allHiddenCards.remove( rnd.nextInt(deck.size()) );
-        roundStateCopy.deck.addAll(allHiddenCards);
-
-        return roundStateCopy;
-    }
-
-
     public void drawCardForPlayerSpace(PlayerSpace playerSpace){
         boolean added = playerSpace == spaceOfFirstPlayer ? spaceOfFirstPlayer.hand.add(drawCardFromDeck()) : spaceOfSecondPlayer.hand.add(drawCardFromDeck());
     }
@@ -110,12 +120,10 @@ public class RoundState {
     }
 
     public Map<CardType, Double> getProbabilityMapForPlayer(PlayerSpace playerSpace){
-        List<CardType> allHiddenCards = getAllHiddenCards();
+        List<CardType> allHiddenCards = getAllHiddenCardsAndHands();
 
-        if( playerSpace == spaceOfFirstPlayer)
-            allHiddenCards.remove(spaceOfSecondPlayer);
-        else
-            allHiddenCards.remove(spaceOfFirstPlayer);
+        playerSpace.hand.forEach(allHiddenCards::remove);
+
         Double nrOfHiddenCards = new Double(allHiddenCards.size());
         HashMap<CardType, Double> probabilityMap = new HashMap<>();
 
@@ -152,18 +160,18 @@ public class RoundState {
 
     private static double round(double value) {
         BigDecimal bd = new BigDecimal(value);
-        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        bd = bd.setScale(3, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
 
-    public List<CardType> getAllHiddenCards(){
+    public List<CardType> getAllHiddenCardsAndHands(){
         List<CardType> allHiddenCards = new ArrayList<>();
         allHiddenCards.addAll( deck );
         allHiddenCards.addAll( spaceOfFirstPlayer.hand );
         allHiddenCards.addAll( spaceOfSecondPlayer.hand );
         allHiddenCards.add( hiddenDiscardedCard );
-
-        return  allHiddenCards;
+        Collections.shuffle(allHiddenCards);
+        return allHiddenCards;
     }
 
     public List<CardType> getHiddenCards(){
@@ -176,5 +184,10 @@ public class RoundState {
         return  allHiddenCards;
     }
 
+
+    public void discardPlayedCard(PlayerSpace space, CardType cardType){
+        space.hand.remove(cardType);
+        space.discardedDeck.add(cardType);
+    }
 
 }

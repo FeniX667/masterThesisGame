@@ -78,7 +78,7 @@ public class Engine {
 
         currentPlayer.playerSpace.isSafe = false;
         roundState.drawCardForPlayerSpace(currentPlayer.playerSpace);
-        decision = currentPlayer.makeDecision(roundState, DecisionType.getDecisions(currentPlayer.playerSpace.hand));
+        decision = currentPlayer.makeDecision(new RoundState(roundState, currentPlayer.playerSpace), DecisionType.getDecisions(currentPlayer.playerSpace.hand));
 
         logger.println(iteration + " " + roundState.spaceOfFirstPlayer.hand + " ; " + roundState.spaceOfSecondPlayer.hand + " ; " + roundState.turnState + ": " + decision);
 
@@ -158,17 +158,17 @@ public class Engine {
     }
 
     private void guardPlay(CardType guardChoice, PlayerSpace decisionMakerSpace, PlayerSpace opponentSpace){
-        discardPlayedCard(decisionMakerSpace, CardType.guard);
+        roundState.discardPlayedCard(decisionMakerSpace, CardType.guard);
         if( !opponentSpace.isSafe && opponentSpace.hand.contains(guardChoice))
                 endGame(currentPlayer);
     }
 
     private void priestPlay(PlayerSpace decisionMakerSpace) {
-        discardPlayedCard(decisionMakerSpace, CardType.priest);
+        roundState.discardPlayedCard(decisionMakerSpace, CardType.priest);
     }
 
     private void baronPlay(PlayerSpace decisionMakerSpace, PlayerSpace opponentSpace) {
-        discardPlayedCard(decisionMakerSpace, CardType.baron);
+        roundState.discardPlayedCard(decisionMakerSpace, CardType.baron);
 
         if( !opponentSpace.isSafe)
             if ( CardType.getStrength(decisionMakerSpace.hand.get(0)) > CardType.getStrength(opponentSpace.hand.get(0)) )
@@ -178,15 +178,15 @@ public class Engine {
     }
 
     private void handmaidPlay(PlayerSpace decisionMakerSpace) {
-        discardPlayedCard(decisionMakerSpace, CardType.handmaid);
+        roundState.discardPlayedCard(decisionMakerSpace, CardType.handmaid);
         decisionMakerSpace.isSafe = true;
     }
 
     private void princePlay(PlayerSpace decisionMakerSpace, PlayerSpace opponentSpace) {
-        discardPlayedCard(decisionMakerSpace, CardType.prince);
+        roundState.discardPlayedCard(decisionMakerSpace, CardType.prince);
         if(opponentSpace == null){
             CardType princedCard = decisionMakerSpace.hand.get(0);
-            discardPlayedCard(decisionMakerSpace, princedCard);
+            roundState.discardPlayedCard(decisionMakerSpace, princedCard);
             if( princedCard == CardType.princess )
                 endGame(opponentPlayer);
             else{
@@ -194,7 +194,7 @@ public class Engine {
             }
         }else if( !opponentSpace.isSafe){
             CardType princedCard = opponentSpace.hand.get(0);
-            discardPlayedCard(opponentSpace, princedCard);
+            roundState.discardPlayedCard(opponentSpace, princedCard);
             if( princedCard == CardType.princess )
                 endGame(currentPlayer);
             else{
@@ -204,7 +204,7 @@ public class Engine {
     }
 
     private void kingPlay(PlayerSpace decisionMakerSpace, PlayerSpace opponentSpace) {
-        discardPlayedCard(decisionMakerSpace, CardType.king);
+        roundState.discardPlayedCard(decisionMakerSpace, CardType.king);
         if( !opponentSpace.isSafe) {
             CardType secondCard = decisionMakerSpace.hand.remove(0);
             decisionMakerSpace.hand.add(opponentSpace.hand.remove(0));
@@ -213,11 +213,11 @@ public class Engine {
     }
 
     private void countessPlay(PlayerSpace decisionMakerSpace ) {
-        discardPlayedCard(decisionMakerSpace, CardType.countess);
+        roundState.discardPlayedCard(decisionMakerSpace, CardType.countess);
     }
 
     private void princessPlay(PlayerSpace decisionMakerSpace) {
-        discardPlayedCard(decisionMakerSpace, CardType.princess);
+        roundState.discardPlayedCard(decisionMakerSpace, CardType.princess);
         endGame(opponentPlayer);
     }
 
@@ -245,11 +245,6 @@ public class Engine {
 
         statistics.endingRound = iteration;
         statistics.winner = roundState.winner;
-    }
-
-    private void discardPlayedCard(PlayerSpace space, CardType cardType){
-        space.hand.remove(cardType);
-        space.discardedDeck.add(cardType);
     }
 
     public void printCurrentProbabilityMapForPlayer(PlayerSpace playerSpace) {

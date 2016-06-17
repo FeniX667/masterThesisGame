@@ -1,0 +1,17 @@
+GreedyAlgorithm vs. MinMaxAlgorithm = 570/414; 54/29; Draws: 16; Wtfs: 0
+GreedyAlgorithm vs. MinMaxAlgorithm = 564/417; 46/30; Draws: 19; Wtfs: 0
+MinMaxAlgorithm vs. GreedyAlgorithm = 529/456; 22/50; Draws: 15; Wtfs: 0
+MinMaxAlgorithm vs. GreedyAlgorithm = 533/458; 37/41; Draws: 9; Wtfs: 0
+MinMaxAlgorithm vs. MinMaxAlgorithm = 540/450; 42/45; Draws: 10; Wtfs: 0
+MinMaxAlgorithm vs. MinMaxAlgorithm = 545/441; 40/53; Draws: 14; Wtfs: 0
+GreedyAlgorithm vs. GreedyAlgorithm = 520/459; 24/30; Draws: 21; Wtfs: 0
+GreedyAlgorithm vs. GreedyAlgorithm = 541/445; 22/32; Draws: 14; Wtfs: 0
+GreedyAlgorithm vs. RandomAlgorithm = 662/328; 56/39; Draws: 10; Wtfs: 0
+GreedyAlgorithm vs. RandomAlgorithm = 650/336; 65/38; Draws: 14; Wtfs: 0
+RandomAlgorithm vs. GreedyAlgorithm = 382/609; 27/53; Draws: 9; Wtfs: 0
+RandomAlgorithm vs. GreedyAlgorithm = 402/583; 29/61; Draws: 15; Wtfs: 0
+MinMaxAlgorithm vs. RandomAlgorithm = 628/357; 60/46; Draws: 15; Wtfs: 0
+MinMaxAlgorithm vs. RandomAlgorithm = 664/323; 47/46; Draws: 13; Wtfs: 0
+RandomAlgorithm vs. MinMaxAlgorithm = 429/557; 59/39; Draws: 14; Wtfs: 0
+
+RandomAlgorithm vs. MinMaxAlgorithm = 424/559; 67/50; Draws: 17; Wtfs: 0
