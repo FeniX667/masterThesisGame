@@ -7,25 +7,23 @@ public class PlayerSpace {
     public ArrayList<CardType> discardedDeck;
     public ArrayList<CardType> hand;
     public boolean isSafe;
+    public CardType knownEnemyCard;
 
     public PlayerSpace(){
         discardedDeck = new ArrayList<>();
         hand= new ArrayList<>();
         isSafe = false;
+        knownEnemyCard = null;
     }
 
-    public PlayerSpace(PlayerSpace playerSpace) {
-        discardedDeck = new ArrayList<>(playerSpace.discardedDeck);
-        hand = new ArrayList(playerSpace.hand);
-        isSafe = playerSpace.isSafe;
-    }
-
-    public PlayerSpace hiddenClone(CardType randomCard, PlayerSpace playerSpace){
+    public PlayerSpace clone(){
         PlayerSpace randomSpace = new PlayerSpace();
-        randomSpace.discardedDeck = new ArrayList<>(playerSpace.discardedDeck);
-        randomSpace.isSafe = playerSpace.isSafe;
+        randomSpace.discardedDeck = new ArrayList<>();
+        randomSpace.discardedDeck.addAll(this.discardedDeck);
+        randomSpace.isSafe = this.isSafe;
+        randomSpace.knownEnemyCard = this.knownEnemyCard;
         randomSpace.hand = new ArrayList<>();
-        randomSpace.hand.add(randomCard);
+        randomSpace.hand.addAll(this.hand);
         return randomSpace;
     }
 

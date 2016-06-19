@@ -7,9 +7,6 @@ import dmalarczyk.masterThesis.gameModel.PlayerSpace;
 import dmalarczyk.masterThesis.gameModel.RoundState;
 import dmalarczyk.masterThesis.playerAlgorithm.Player;
 
-import java.io.*;
-import java.util.Random;
-
 public class Engine {
     public RoundState roundState;
     public Player firstPlayer;
@@ -17,15 +14,22 @@ public class Engine {
     public Player currentPlayer, opponentPlayer;
     public GameStatistics statistics ;
     public int iteration;
-    Random rnd;
-    PrintWriter logger;
+    public StringBuilder log;
+    String eol;
 
     public Engine(Player firstPlayer, Player secondPlayer){
+        roundState = new RoundState();
         initVariables();
         setPlayers(firstPlayer, secondPlayer);
     }
 
-    public void setPlayers(Player firstPlayer, Player secondPlayer){
+    public Engine(Player firstPlayer, Player secondPlayer, RoundState roundState){
+        this.roundState = roundState;
+        initVariables();
+        setPlayers(firstPlayer, secondPlayer);
+    }
+
+    private void setPlayers(Player firstPlayer, Player secondPlayer){
         firstPlayer.setPlayerSpace(roundState.spaceOfFirstPlayer);
         secondPlayer.setPlayerSpace(roundState.spaceOfSecondPlayer);
         this.firstPlayer = firstPlayer;
@@ -33,40 +37,65 @@ public class Engine {
     }
 
     private void initVariables(){
-        rnd = new Random();
-        roundState = new RoundState();
         statistics = new GameStatistics();
         iteration = 1;
-
-        try {
-            logger = new PrintWriter(
-                    (new FileOutputStream(new File("gameLog.txt"), true)));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
+        log = new StringBuilder();
+        eol = System.getProperty("line.separator");
     }
 
     public void run(){
-        roundState.switchState();
-        logger.println(firstPlayer.name + " vs. " + secondPlayer.name);
-        logger.println("Discarded cards: " + roundState.openDiscardedCards + ". Hidden card: " + roundState.hiddenDiscardedCard);
+        log.append(firstPlayer.name + " vs. " + secondPlayer.name + eol);
+        log.append("Discarded cards: " + roundState.openDiscardedCards + ". Hidden card: " + roundState.hiddenDiscardedCard + eol);
         do{
             iterate();
         }while(roundState.turnState != RoundState.TurnState.ended);
 
-        logger.print(statistics.winner + " won in round " + statistics.endingRound + ". ");
-        if( statistics.isWinByComparison )
-            logger.println("Win by comparison.");
-        else
-            logger.println("Winning move: " + statistics.winningMove);
+        if( statistics.winner == RoundState.Winner.none)
+            log.append("Draw in round " + statistics.endingRound + ". ");
+        else{
+            if(statistics.winner == RoundState.Winner.firstPlayer)
+                log.append(firstPlayer.name + " won the game. ");
+            else
+                log.append(secondPlayer.name + " won the game. ");
+            if( statistics.isWinByComparison )
+                log.append("Win by comparison." + eol);
+            else
+                log.append("Winning move: " + statistics.winningMove + eol);
+        }
 
-        logger.println("Cards remaining in deck: " + roundState.deck );
+
+        log.append("Cards remaining in deck: " + roundState.deck + eol);
+        log.append("First player discarded: " + firstPlayer.playerSpace.discardedDeck + eol);
+        log.append("Second player discarded: " + secondPlayer.playerSpace.discardedDeck + eol);
+        log.append("--------------------------------------------------------------" + eol);
     }
 
     public void iterate(){
         DecisionType decision;
 
+        setCurrentAndOpponentSpace();
+
+        roundState.drawCardForPlayerSpace(currentPlayer.playerSpace);
+
+        decision = getCurrentDecisionFromPlayer();
+
+        log.append(iteration + " " + roundState.spaceOfFirstPlayer.hand +
+                " ; " + roundState.spaceOfSecondPlayer.hand + " ; " + roundState.turnState + ": " + decision + eol);
+
+        makeMove(decision);
+
+        statistics.winningMove = decision;
+        if( roundState.deck.size() == 0 && roundState.turnState != RoundState.TurnState.ended){
+            endGame(null);
+            return;
+        }
+        roundState.switchState();
+        iteration++;
+    }
+
+    public void setCurrentAndOpponentSpace(){
+        if( roundState.turnState == RoundState.TurnState.notStarted )
+            roundState.switchState();
         if (roundState.turnState == RoundState.TurnState.firstPlayer){
             currentPlayer = firstPlayer;
             opponentPlayer = secondPlayer;
@@ -75,24 +104,11 @@ public class Engine {
             currentPlayer = secondPlayer;
             opponentPlayer = firstPlayer;
         }
-
         currentPlayer.playerSpace.isSafe = false;
-        roundState.drawCardForPlayerSpace(currentPlayer.playerSpace);
-        decision = currentPlayer.makeDecision(new RoundState(roundState, currentPlayer.playerSpace), DecisionType.getDecisions(currentPlayer.playerSpace.hand));
+    }
 
-        logger.println(iteration + " " + roundState.spaceOfFirstPlayer.hand + " ; " + roundState.spaceOfSecondPlayer.hand + " ; " + roundState.turnState + ": " + decision);
-
-        makeMove(decision);
-        statistics.winningMove = decision;
-
-        if( roundState.deck.size() == 0 && roundState.turnState != RoundState.TurnState.ended){
-            endGame(null);
-            return;
-        }
-
-        roundState.switchState();
-
-        iteration++;
+    public DecisionType getCurrentDecisionFromPlayer(){
+        return currentPlayer.makeDecision(new RoundState(roundState, currentPlayer.playerSpace), DecisionType.getDecisions(currentPlayer.playerSpace.hand));
     }
 
     public void makeMove(DecisionType decision){
@@ -128,7 +144,7 @@ public class Engine {
                 guardPlay(CardType.princess, decisionMakerSpace, opponentSpace);
                 break;
             case priestPlay:
-                priestPlay(decisionMakerSpace);
+                priestPlay(decisionMakerSpace, opponentSpace);
                 break;
             case baronPlay:
                 baronPlay(decisionMakerSpace, opponentSpace);
@@ -163,8 +179,9 @@ public class Engine {
                 endGame(currentPlayer);
     }
 
-    private void priestPlay(PlayerSpace decisionMakerSpace) {
+    private void priestPlay(PlayerSpace decisionMakerSpace, PlayerSpace opponentSpace) {
         roundState.discardPlayedCard(decisionMakerSpace, CardType.priest);
+        decisionMakerSpace.knownEnemyCard = opponentSpace.hand.get(0);
     }
 
     private void baronPlay(PlayerSpace decisionMakerSpace, PlayerSpace opponentSpace) {
@@ -209,6 +226,8 @@ public class Engine {
             CardType secondCard = decisionMakerSpace.hand.remove(0);
             decisionMakerSpace.hand.add(opponentSpace.hand.remove(0));
             opponentSpace.hand.add(secondCard);
+            decisionMakerSpace.knownEnemyCard = opponentSpace.hand.get(0);
+            opponentSpace.knownEnemyCard = decisionMakerSpace.hand.get(0);
         }
     }
 
@@ -221,7 +240,7 @@ public class Engine {
         endGame(opponentPlayer);
     }
 
-    private void endGame(Player winner) {
+    public void endGame(Player winner) {
         roundState.turnState = RoundState.TurnState.ended;
         if( winner == null ){
             int playerAStrength = CardType.getStrength(roundState.spaceOfFirstPlayer.hand.get(0)) ;
@@ -248,11 +267,6 @@ public class Engine {
     }
 
     public void printCurrentProbabilityMapForPlayer(PlayerSpace playerSpace) {
-        logger.println(roundState.getProbabilityMapForPlayer(playerSpace));
-    }
-
-    public void closeGame(){
-        logger.println("--------------------------------------------------------------");
-        logger.close();
+        log.append(roundState.getProbabilityMapForPlayer(playerSpace) + eol);
     }
 }

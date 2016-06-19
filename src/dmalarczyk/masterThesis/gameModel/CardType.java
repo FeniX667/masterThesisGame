@@ -4,6 +4,8 @@ public enum CardType {
     guard, priest, baron, handmaid, prince, king, countess, princess;
 
     public static int getStrength(CardType cardType){
+        if( cardType == null )
+            return 0;
         switch(cardType){
             case guard:
                 return 1;

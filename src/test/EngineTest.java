@@ -2,17 +2,13 @@ import dmalarczyk.masterThesis.gameEngine.Engine;
 import dmalarczyk.masterThesis.gameModel.CardType;
 import dmalarczyk.masterThesis.gameModel.DecisionType;
 import dmalarczyk.masterThesis.gameModel.RoundState;
-import dmalarczyk.masterThesis.playerAlgorithm.GreedyAlgorithm;
-import dmalarczyk.masterThesis.playerAlgorithm.MinMaxAlgorithm;
-import dmalarczyk.masterThesis.playerAlgorithm.Player;
-import dmalarczyk.masterThesis.playerAlgorithm.RandomAlgorithm;
+import dmalarczyk.masterThesis.playerAlgorithm.*;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -21,19 +17,29 @@ public class EngineTest {
 
     @Test
     public void playGame(){
-        Player firstPlayer = new RandomAlgorithm();
+        Player firstPlayer = new MinMaxAlgorithm();
         Player secondPlayer = new RandomAlgorithm();
 
         Engine engine = new Engine(firstPlayer, secondPlayer);
         engine.run();
-        engine.closeGame();
-        // engine.printCurrentProbabilityMap();
+
+        try {
+            PrintWriter writer = new PrintWriter(
+                    (new FileOutputStream(new File("gameLog.txt"), true)));
+            writer.print( engine.log.toString() );
+            writer.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         assertTrue(engine.roundState.turnState == RoundState.TurnState.ended);
+        assertTrue(engine.roundState.winner == RoundState.Winner.firstPlayer
+                || engine.roundState.winner == RoundState.Winner.secondPlayer
+                || engine.roundState.winner == RoundState.Winner.none);
     }
 
     @Test
-    public void guardPlayTest() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void guardPlayTest() {
         Player firstPlayer = new MinMaxAlgorithm();
         Player secondPlayer = new GreedyAlgorithm();
 
@@ -64,8 +70,8 @@ public class EngineTest {
         int secondPlayerByComparison = 0;
         int wtfs = 0;
         int draws = 0;
-        Player firstPlayer = new RandomAlgorithm();
-        Player secondPlayer = new MinMaxAlgorithm();
+        Player firstPlayer = new MctsAlgorithm();
+        Player secondPlayer = new MctsAlgorithm();
 
         for( int i = 1000 ; i > 0 ; i--) {
             Engine engine = new Engine(firstPlayer, secondPlayer);
@@ -87,11 +93,9 @@ public class EngineTest {
                 draws++;
             else
                 wtfs++;
-
-
         }
 
-        logger.println(firstPlayer.name + " vs. " + secondPlayer.name + " = " + firstPlayerWon +"/"+secondPlayerWon+ "; " + firstPlayerByComparison+"/"+ secondPlayerByComparison + "; Draws: " + draws + "; Wtfs: " + wtfs);
+        logger.println(firstPlayer.name + " vs. " + secondPlayer.name + " = " + firstPlayerWon + "/" + secondPlayerWon + "; " + firstPlayerByComparison + "/" + secondPlayerByComparison + "; Draws: " + draws + "; Wtfs: " + wtfs);
         logger.close();
 
         // assertTrue(firstPlayerWon > secondPlayerWon);

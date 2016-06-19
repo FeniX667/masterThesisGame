@@ -31,31 +31,52 @@ public class RoundState {
         initDecks();
     }
 
+    /**
+     * Makes copy with shuffled cards. Sets send playerSpace as first and changes turnState to correspond.
+     * @param roundState
+     * @param knownPlayerSpace
+     */
     public RoundState(RoundState roundState, PlayerSpace knownPlayerSpace){
+        if( !roundState.spaceOfFirstPlayer.hand.containsAll(knownPlayerSpace.hand) && !roundState.spaceOfSecondPlayer.hand.containsAll(knownPlayerSpace.hand) )
+            throw new RoundCopyMismatchException();
         List<CardType> allHiddenCards = roundState.getAllHiddenCardsAndHands();
         knownPlayerSpace.hand.forEach(allHiddenCards::remove);
-        PlayerSpace opponentSpace;
-        if (roundState.spaceOfFirstPlayer == knownPlayerSpace)
+        PlayerSpace opponentSpace = null;
+        if( roundState.spaceOfFirstPlayer.hand.containsAll(knownPlayerSpace.hand) ){
+            turnState = TurnState.firstPlayer;
             opponentSpace = roundState.spaceOfSecondPlayer;
-        else
+        }
+        else if( roundState.spaceOfSecondPlayer.hand.containsAll(knownPlayerSpace.hand)){
+            turnState = TurnState.secondPlayer;
             opponentSpace = roundState.spaceOfFirstPlayer;
+        }
 
-        initVariables();
+        deck = new ArrayList<>();
+        spaceOfFirstPlayer = new PlayerSpace();
+        spaceOfSecondPlayer = new PlayerSpace();
+        openDiscardedCards = new ArrayList<>();
+        rnd = new Random();
 
         deck.addAll(allHiddenCards);
+
         spaceOfFirstPlayer.hand.addAll( knownPlayerSpace.hand );
         spaceOfFirstPlayer.discardedDeck.addAll( knownPlayerSpace.discardedDeck );
         spaceOfFirstPlayer.isSafe = knownPlayerSpace.isSafe;
-        spaceOfSecondPlayer.isSafe = opponentSpace.isSafe;
+        spaceOfFirstPlayer.knownEnemyCard = knownPlayerSpace.knownEnemyCard;
+
         spaceOfSecondPlayer.discardedDeck.addAll( opponentSpace.discardedDeck );
         for(int i=0 ; i<opponentSpace.hand.size() ; i++ ){
             drawCardForPlayerSpace(spaceOfSecondPlayer);
         }
+        spaceOfSecondPlayer.isSafe = opponentSpace.isSafe;
+        spaceOfSecondPlayer.knownEnemyCard =opponentSpace.knownEnemyCard;
+
         openDiscardedCards.addAll(roundState.openDiscardedCards);
         hiddenDiscardedCard = drawCardFromDeck();
-        turnState = roundState.turnState;
         winner = roundState.winner;
         winByComparison = roundState.winByComparison;
+        if( !spaceOfFirstPlayer.hand.containsAll(knownPlayerSpace.hand))
+            throw new RoundCopyMismatchException();
     }
 
     private void initVariables(){
@@ -134,7 +155,14 @@ public class RoundState {
                     tmpCount+=1.0;
                 }
             }
-            probabilityMap.put(cardType, round(tmpCount / nrOfHiddenCards) );
+            if( playerSpace.knownEnemyCard != null ){
+                if( playerSpace.knownEnemyCard == cardType )
+                    probabilityMap.put(cardType, 1.000 );
+                else
+                    probabilityMap.put(cardType, 0.000 );
+            }
+            else
+                probabilityMap.put(cardType, round(tmpCount / nrOfHiddenCards) );
         }
 
         return probabilityMap;
@@ -188,6 +216,15 @@ public class RoundState {
     public void discardPlayedCard(PlayerSpace space, CardType cardType){
         space.hand.remove(cardType);
         space.discardedDeck.add(cardType);
+        PlayerSpace opponentSpace;
+
+        if(space == spaceOfFirstPlayer){
+            opponentSpace = spaceOfSecondPlayer;
+        }else{
+            opponentSpace = spaceOfFirstPlayer;
+        }
+        if( opponentSpace.knownEnemyCard != null && opponentSpace.knownEnemyCard == cardType )
+            opponentSpace.knownEnemyCard = null;
     }
 
 }
