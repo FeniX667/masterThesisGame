@@ -7,6 +7,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -21,7 +22,7 @@ public class WinningDecisionAxisChart extends JFrame {
     public WinningDecisionAxisChart(String applicationTitle, String chartTitle, List<GameStatistics> gameStatistics){
         super(applicationTitle);
 
-        AxisDataset dataSet = createDataSet(gameStatistics);
+        XYDataset dataSet = createDataSet(gameStatistics);
 
         JFreeChart chart = createChart(dataSet, chartTitle);
 
@@ -75,8 +76,8 @@ public class WinningDecisionAxisChart extends JFrame {
         return dataset;
     }
 
-    private JFreeChart createChart(XYDataset dataSet, String chartTitle) {
-        JFreeChart chart = ChartFactory.createXYLineChart(chartTitle, "Round", "Wins", dataSet, PlotOrientation.VERTICAL, true, true, false);
+    private JFreeChart createChart(DefaultCategoryDataset dataSet, String chartTitle) {
+        JFreeChart chart = ChartFactory.createBarChart(chartTitle, "Round", "Wins", dataSet, PlotOrientation.VERTICAL, true, true, false);
 
         XYPlot plot =  chart.getXYPlot();
 
