@@ -1,16 +1,13 @@
 package dmalarczyk.masterThesis.ui;
 
-import com.sun.org.glassfish.external.statistics.Statistic;
 import dmalarczyk.masterThesis.gameEngine.Engine;
 import dmalarczyk.masterThesis.gameEngine.GameStatistics;
-import dmalarczyk.masterThesis.gameModel.RoundState;
 import dmalarczyk.masterThesis.playerAlgorithm.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -136,10 +133,17 @@ public class CLI {
         roundWinSpline.pack();
         roundWinSpline.setVisible(true);
 
-        WinningDecisionAxisChart winningDecisionAxisChart = new WinningDecisionAxisChart(appTitle, "Wins per round", statistics);
-        winningDecisionAxisChart.setLocation(1000, 0);
-        winningDecisionAxisChart.pack();
-        winningDecisionAxisChart.setVisible(true);
+        WinningDecisionBarChart winningDecisionBarChartForFirstPlayer = new WinningDecisionBarChart(
+                appTitle, "Decision winning in round for " +firstPlayer.name, statistics);
+        winningDecisionBarChartForFirstPlayer.setLocation(1000, 0);
+        winningDecisionBarChartForFirstPlayer.pack();
+        winningDecisionBarChartForFirstPlayer.setVisible(true);
+
+        WinningDecisionBarChart winningDecisionBarChartForSecondPlayer = new WinningDecisionBarChart(
+                appTitle, "Decision winning in round for " +secondPlayer.name, statistics);
+        winningDecisionBarChartForSecondPlayer.setLocation(1000, 0);
+        winningDecisionBarChartForSecondPlayer.pack();
+        winningDecisionBarChartForSecondPlayer.setVisible(true);
     }
 
     private void startSingleGame() {

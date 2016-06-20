@@ -5,25 +5,15 @@ import dmalarczyk.masterThesis.gameModel.RoundState;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PiePlot;
-import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYSplineRenderer;
-import org.jfree.data.general.DefaultPieDataset;
-import org.jfree.data.general.PieDataset;
-import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.util.Rotation;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Malar on 2016-06-20.
@@ -53,10 +43,6 @@ public class RoundWinSpline extends JFrame {
             firstPlayerWinsInTurn[i] = 0;
             secondPlayerWinsInTurn[i] = 0;
         }
-
-        Map<Integer, Integer> averageWinMap = new HashMap<>();
-        Map<Integer, Integer> firstPlayerWinMap = new HashMap<>();
-        Map<Integer, Integer> secondPlayerWinMap = new HashMap<>();
 
         for(GameStatistics statistics : gameStatistics) {
             if (statistics.winner == RoundState.Winner.firstPlayer) {
