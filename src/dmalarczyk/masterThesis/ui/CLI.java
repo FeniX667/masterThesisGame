@@ -8,10 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Created by Malar on 2016-06-20.
@@ -38,9 +35,9 @@ public class CLI {
         System.out.println("Welcome to Love Letter simulator. Set players and wanted nr of plays");
         do{
             viewPanel();
-            command = user_input.nextLine();
 
             try {
+                command = user_input.nextLine();
                 switch (command) {
                     case "set player 1":
                         firstPlayer = setPlayer();
@@ -64,6 +61,8 @@ public class CLI {
                 }
             }catch (NumberFormatException e){
                 System.out.println("Incorrect number");
+            }catch (NoSuchElementException e){
+                continue;
             }
         }while (!command.equals("end"));
 
