@@ -4,7 +4,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
@@ -35,9 +37,14 @@ public class RoundStateTest {
     }
 
     @Test
-    public void initDeck_ContainsProperAmountOfAllCardTypes2() {
+    public void initDeck_ContainsProperAmountOfAllCardTypes() {
         RoundState roundState = new RoundState();
-        assertEquals(nrOfCards , roundState.deck.stream().filter( cardType -> cardType == this.cardType ).collect(Collectors.toList()).size());
+        List<CardType> allCards = new ArrayList<>();
+        allCards.addAll(roundState.getHiddenCards());
+        allCards.addAll(roundState.openDiscardedCards);
+        allCards.addAll(roundState.spaceOfSecondPlayer.discardedDeck);
+        allCards.addAll(roundState.spaceOfFirstPlayer.discardedDeck);
+        assertEquals(nrOfCards, allCards.stream().filter(cardType -> cardType == this.cardType).collect(Collectors.toList()).size());
     }
 
 }

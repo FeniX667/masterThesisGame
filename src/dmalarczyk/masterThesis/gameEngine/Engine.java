@@ -15,7 +15,7 @@ public class Engine {
     public GameStatistics statistics ;
     public int iteration;
     public StringBuilder log;
-    String eol;
+    public String eol;
 
     public Engine(Player firstPlayer, Player secondPlayer){
         roundState = new RoundState();
@@ -50,25 +50,9 @@ public class Engine {
             iterate();
         }while(roundState.turnState != RoundState.TurnState.ended);
 
-        if( statistics.winner == RoundState.Winner.none)
-            log.append("Draw in round " + statistics.endingRound + ". ");
-        else{
-            if(statistics.winner == RoundState.Winner.firstPlayer)
-                log.append(firstPlayer.name + " won the game. ");
-            else
-                log.append(secondPlayer.name + " won the game. ");
-            if( statistics.isWinByComparison )
-                log.append("Win by comparison." + eol);
-            else
-                log.append("Winning move: " + statistics.winningMove + eol);
-        }
-
-
-        log.append("Cards remaining in deck: " + roundState.deck + eol);
-        log.append("First player discarded: " + firstPlayer.playerSpace.discardedDeck + eol);
-        log.append("Second player discarded: " + secondPlayer.playerSpace.discardedDeck + eol);
-        log.append("--------------------------------------------------------------" + eol);
+        logResult();
     }
+
 
     public void iterate(){
         DecisionType decision;
@@ -265,6 +249,27 @@ public class Engine {
         statistics.endingRound = iteration;
         statistics.winner = roundState.winner;
     }
+
+    private void logResult() {
+        if( statistics.winner == RoundState.Winner.none)
+            log.append("Draw in round " + statistics.endingRound + ". ");
+        else{
+            if(statistics.winner == RoundState.Winner.firstPlayer)
+                log.append(firstPlayer.name + "(1st player) won the game. ");
+            else
+                log.append(secondPlayer.name + "(2nd player) won the game. ");
+            if( statistics.isWinByComparison )
+                log.append("Win by comparison." + eol);
+            else
+                log.append("Ending move: " + statistics.winningMove + eol);
+        }
+
+
+        log.append("Cards remaining in deck: " + roundState.deck + eol);
+        log.append("First player discarded: " + firstPlayer.playerSpace.discardedDeck + eol);
+        log.append("Second player discarded: " + secondPlayer.playerSpace.discardedDeck + eol);
+    }
+
 
     public void printCurrentProbabilityMapForPlayer(PlayerSpace playerSpace) {
         log.append(roundState.getProbabilityMapForPlayer(playerSpace) + eol);

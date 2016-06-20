@@ -19,6 +19,13 @@ public class MctsAlgorithm extends Player {
         this.iterationRestriction = 2000;
         rnd = new Random();
     }
+    public MctsAlgorithm(int timeRestriction){
+        super();
+        this.name = "MctsAlgorithm";
+        this.timeRestriction = timeRestriction;
+        this.iterationRestriction = 2000;
+        rnd = new Random();
+    }
 
     class Node{
         DecisionType decision;

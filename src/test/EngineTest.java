@@ -17,7 +17,7 @@ public class EngineTest {
 
     @Test
     public void playGame(){
-        Player firstPlayer = new MinMaxAlgorithm();
+        Player firstPlayer = new GreedyAlgorithm();
         Player secondPlayer = new RandomAlgorithm();
 
         Engine engine = new Engine(firstPlayer, secondPlayer);
@@ -70,8 +70,8 @@ public class EngineTest {
         int secondPlayerByComparison = 0;
         int wtfs = 0;
         int draws = 0;
-        Player firstPlayer = new MctsAlgorithm();
-        Player secondPlayer = new MctsAlgorithm();
+        Player firstPlayer = new GreedyAlgorithm();
+        Player secondPlayer = new RandomAlgorithm();
 
         for( int i = 1000 ; i > 0 ; i--) {
             Engine engine = new Engine(firstPlayer, secondPlayer);
