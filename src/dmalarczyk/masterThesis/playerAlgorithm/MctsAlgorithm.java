@@ -104,9 +104,7 @@ public class MctsAlgorithm extends Player {
             }
             elapsedTime = System.currentTimeMillis() - startTime;
             iteration++;
-            shouldContinue = timePredicate(elapsedTime); // && simCountPredicate(iteration);
-            if (!shouldContinue)
-                System.out.print("");
+            shouldContinue = timePredicate(elapsedTime);
         }while (shouldContinue);
 
         DecisionType mostProvenDecision = root.getMostProvenDecision();

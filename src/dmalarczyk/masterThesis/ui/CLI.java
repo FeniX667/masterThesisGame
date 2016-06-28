@@ -72,7 +72,8 @@ public class CLI {
         System.out.println("| Player 1 is " + firstPlayer.name);
         System.out.println("| Player 2 is " + secondPlayer.name);
         System.out.println("| Nr of plays in simulation " + roundCount);
-        System.out.println("| Type one of following commands: " + commandList);
+        System.out.println("| Type one of following commands: ");
+        System.out.println("| " + commandList);
         System.out.println("---------------------------------");
 
     }
@@ -123,26 +124,26 @@ public class CLI {
 
     private void showResultsOnCharts(List<GameStatistics> statistics){
         String appTitle = firstPlayer.name + " vs. " + secondPlayer.name;
-        WinChart winChart = new WinChart(appTitle, "Win ratio", statistics);
+        WinChart winChart = new WinChart(appTitle + " ; win ratio", "Win ratio", statistics);
         winChart.pack();
         winChart.setVisible(true);
 
-        RoundWinSpline roundWinSpline = new RoundWinSpline(appTitle, "Wins per round", statistics);
-        roundWinSpline.setLocation(500, 0);
+        RoundWinSpline roundWinSpline = new RoundWinSpline(appTitle + " ; wins per round", "Wins per round", statistics);
+        roundWinSpline.setLocation(520, 0);
         roundWinSpline.pack();
         roundWinSpline.setVisible(true);
 
-        WinningDecisionBarChart winningDecisionBarChartForFirstPlayer = new WinningDecisionBarChart(
-                appTitle, "Decision winning in round for " +firstPlayer.name, statistics);
-        winningDecisionBarChartForFirstPlayer.setLocation(1000, 0);
-        winningDecisionBarChartForFirstPlayer.pack();
-        winningDecisionBarChartForFirstPlayer.setVisible(true);
+        WinningDecisionPerRoundBarChart winningDecisionPerRoundBarChartForFirstPlayer = new WinningDecisionPerRoundBarChart(
+                appTitle + " ; winning decision per round", "Decision wins per round for " +firstPlayer.name, statistics);
+        winningDecisionPerRoundBarChartForFirstPlayer.setLocation(0, 310);
+        winningDecisionPerRoundBarChartForFirstPlayer.pack();
+        winningDecisionPerRoundBarChartForFirstPlayer.setVisible(true);
 
-        WinningDecisionBarChart winningDecisionBarChartForSecondPlayer = new WinningDecisionBarChart(
-                appTitle, "Decision winning in round for " +secondPlayer.name, statistics);
-        winningDecisionBarChartForSecondPlayer.setLocation(1000, 0);
-        winningDecisionBarChartForSecondPlayer.pack();
-        winningDecisionBarChartForSecondPlayer.setVisible(true);
+        GuardDecisionPerRoundBarChart guardDecisionPerRoundBarChart = new GuardDecisionPerRoundBarChart(
+                appTitle + " ; winning guard play per round", "Guard decision wins per round for " +firstPlayer.name, statistics);
+        guardDecisionPerRoundBarChart.setLocation(720, 310);
+        guardDecisionPerRoundBarChart.pack();
+        guardDecisionPerRoundBarChart.setVisible(true);
     }
 
     private void startSingleGame() {

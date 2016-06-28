@@ -12,13 +12,11 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.EnumSet;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
-public class WinningDecisionBarChart extends JFrame {
-    public WinningDecisionBarChart(String applicationTitle, String chartTitle, List<GameStatistics> gameStatistics){
+public class GuardDecisionPerRoundBarChart extends JFrame {
+    public GuardDecisionPerRoundBarChart(String applicationTitle, String chartTitle, List<GameStatistics> gameStatistics){
         super(applicationTitle);
 
         CategoryDataset dataSet = createDataSet(gameStatistics);
@@ -27,7 +25,7 @@ public class WinningDecisionBarChart extends JFrame {
 
         ChartPanel chartPanel = new ChartPanel(chart);
 
-        chartPanel.setPreferredSize( new Dimension(500, 270));
+        chartPanel.setPreferredSize( new Dimension(700, 400));
 
         setContentPane(chartPanel);
     }
@@ -36,10 +34,18 @@ public class WinningDecisionBarChart extends JFrame {
 
         Map<Integer, Map<DecisionType, Integer>> decisionCountInRoundMap = new HashMap<>();
 
+        Set<DecisionType> decisions = new HashSet<>();
+        decisions.add(DecisionType.guard_priest);
+        decisions.add(DecisionType.guard_baron);
+        decisions.add(DecisionType.guard_handmaid);
+        decisions.add(DecisionType.guard_prince);
+        decisions.add(DecisionType.guard_king);
+        decisions.add(DecisionType.guard_countess);
+        decisions.add(DecisionType.guard_princess);
 
-        for( int i = 0 ; i < 12 ; i++ ){
+        for( int i = 1 ; i < 11 ; i++ ){
             Map<DecisionType, Integer> decisionCountMap = new HashMap<>();
-            for( DecisionType decision : EnumSet.allOf(DecisionType.class) ){
+            for( DecisionType decision :decisions){
                 int count = 0;
                 for(GameStatistics statistics : gameStatistics) {
                     if (statistics.winningMove == decision  && statistics.endingRound == i)
@@ -51,8 +57,8 @@ public class WinningDecisionBarChart extends JFrame {
         }
 
         DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
-        for( int i = 0 ; i < 12 ; i++ ) {
-            for (DecisionType decision : EnumSet.allOf(DecisionType.class)) {
+        for( int i = 1 ; i < 11 ; i++ ) {
+            for (DecisionType decision : decisions) {
                 dataSet.addValue( (Number) decisionCountInRoundMap.get(i).get(decision), decision.name() , i);
             }
         }
