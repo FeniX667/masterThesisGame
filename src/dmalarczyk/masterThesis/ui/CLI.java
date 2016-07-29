@@ -10,9 +10,6 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.*;
 
-/**
- * Created by Malar on 2016-06-20.
- */
 public class CLI {
 
     String command;
@@ -55,6 +52,8 @@ public class CLI {
                     case "start single game":
                         startSingleGame();
                         break;
+                    case "end":
+                        break;
                     default:
                         System.out.println("Unknown command");
                         break;
@@ -65,8 +64,8 @@ public class CLI {
                 continue;
             }
         }while (!command.equals("end"));
-
     }
+
     private void viewPanel() {
         System.out.println("---------------------------------");
         System.out.println("| Player 1 is " + firstPlayer.name);
@@ -79,7 +78,7 @@ public class CLI {
     }
 
     private Player setPlayer() {
-        System.out.println("Pick player: Random, Greedy, Minmax, Mcts");
+        System.out.println("Pick player: Random, Greedy, Minmax, Mcts, Human");
         String aiChoice = user_input.nextLine();
         switch (aiChoice) {
             case "Random":
@@ -92,7 +91,10 @@ public class CLI {
                 System.out.println("Set max delay in mcts iterations (in ms):");
                 String mctsOption = user_input.nextLine();
                 return new MctsAlgorithm(new Integer(mctsOption));
+            case "Human":
+                return new Human();
             default:
+                System.out.println("Incorrect algorithm. Random is set.");
                 return new RandomAlgorithm();
         }
     }
@@ -110,7 +112,7 @@ public class CLI {
                 writer = new PrintWriter(
                         (new FileOutputStream(new File("gameLog.txt"), true)));
                 writer.print( engine.log.toString() );
-                writer.print("--------------------------------------------" + engine.eol);
+                writer.print("--------------------------------------------" + engine.log.eol);
                 writer.close();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -119,7 +121,7 @@ public class CLI {
         }
         showResultsOnCharts(statistics);
 
-        System.out.print("Game ended. Check gameLog.txt and simulationLog.txt for further informations.");
+        System.out.print("Game ended. Check simulationLog.txt for further informations.");
     }
 
     private void showResultsOnCharts(List<GameStatistics> statistics){
@@ -149,9 +151,10 @@ public class CLI {
     private void startSingleGame() {
         Engine engine = new Engine(firstPlayer, secondPlayer);
 
+        engine.setLogPrintToConsole(true);
+        if( firstPlayer instanceof Human || secondPlayer instanceof Human)
+            engine.fullLog = false;
         engine.run();
-
-        System.out.println(engine.log.toString());
     }
 
 }
