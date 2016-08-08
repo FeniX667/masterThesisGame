@@ -55,8 +55,11 @@ public class Engine {
         else if( secondPlayer instanceof Human)
             log.appendln("Human player starts with: " + secondPlayer.playerSpace.hand);
 
+        pause( 1000 );
+
         do{
             iterate();
+            pause( 800 );
         }while(roundState.turnState != RoundState.TurnState.ended);
 
         logResult();
@@ -77,12 +80,12 @@ public class Engine {
         if(fullLog){
            log.append(roundState.spaceOfFirstPlayer.hand + " ; " + roundState.spaceOfSecondPlayer.hand + " ; ");
         }
-        log.append(roundState.turnState + ": " + decision);
+        log.append(roundState.turnState + ": " + decision + ".");
         if( opponentPlayer.playerSpace.isSafe )
-            log.append(  ". Opponent is safe.");
-        log.appendln("");
+            log.append(" Opponent is safe.");
 
         makeMove(decision);
+        log.appendln("");
 
         statistics.winningMove = decision;
         if( roundState.deck.size() == 0 && roundState.turnState != RoundState.TurnState.ended){
@@ -184,7 +187,7 @@ public class Engine {
         if( !opponentSpace.isSafe){
             decisionMakerSpace.knownEnemyCard = opponentSpace.hand.get(0);
             if( !fullLog )
-                log.appendln("Opponent has " + decisionMakerSpace.knownEnemyCard + " in his hand");
+                log.append(" Opponent has " + decisionMakerSpace.knownEnemyCard + " in his hand");
         }
     }
 
@@ -234,7 +237,7 @@ public class Engine {
             opponentSpace.knownEnemyCard = decisionMakerSpace.hand.get(0);
 
             if( !fullLog )
-                log.appendln("Players switched " + decisionMakerSpace.knownEnemyCard + " for " + opponentSpace.knownEnemyCard + ".");
+                log.append(" Players switched " + decisionMakerSpace.knownEnemyCard + " for " + opponentSpace.knownEnemyCard + ".");
         }
     }
 
@@ -288,6 +291,7 @@ public class Engine {
         }
 
 
+        log.appendln("");
         log.appendln("Cards remaining in deck: " + roundState.deck);
         log.appendln("First player discarded: " + firstPlayer.playerSpace.discardedDeck);
         log.appendln("Second player discarded: " + secondPlayer.playerSpace.discardedDeck);
@@ -299,5 +303,14 @@ public class Engine {
 
     public void setLogPrintToConsole(boolean flag){
         log.printToConsole = flag;
+    }
+
+    public void pause(int miliseconds){
+        if( !fullLog )
+            try {
+                Thread.sleep(miliseconds);
+            } catch(InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
     }
 }

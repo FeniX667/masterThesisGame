@@ -70,10 +70,10 @@ public class EngineTest {
         int secondPlayerByComparison = 0;
         int wtfs = 0;
         int draws = 0;
-        Player firstPlayer = new GreedyAlgorithm();
-        Player secondPlayer = new RandomAlgorithm();
+        Player firstPlayer = new MinMaxAlgorithm();
+        Player secondPlayer = new GreedyAlgorithm();
 
-        for( int i = 1000 ; i > 0 ; i--) {
+        for( int i = 10000 ; i > 0 ; i--) {
             Engine engine = new Engine(firstPlayer, secondPlayer);
 
             engine.run();
@@ -96,6 +96,40 @@ public class EngineTest {
         }
 
         logger.println(firstPlayer.name + " vs. " + secondPlayer.name + " = " + firstPlayerWon + "/" + secondPlayerWon + "; " + firstPlayerByComparison + "/" + secondPlayerByComparison + "; Draws: " + draws + "; Wtfs: " + wtfs);
+
+        firstPlayerWon = 0;
+        firstPlayerByComparison = 0;
+        secondPlayerWon = 0;
+        secondPlayerByComparison = 0;
+        wtfs = 0;
+        draws = 0;
+        firstPlayer = new GreedyAlgorithm();
+        secondPlayer = new MinMaxAlgorithm();
+
+        for( int i = 10000 ; i > 0 ; i--) {
+            Engine engine = new Engine(firstPlayer, secondPlayer);
+
+            engine.run();
+            // engine.closeGame();
+            // engine.printCurrentProbabilityMap();
+            RoundState.Winner winner = engine.roundState.winner;
+
+            if( winner == RoundState.Winner.firstPlayer){
+                firstPlayerWon++;
+                firstPlayerByComparison += engine.roundState.winByComparison ? 1 : 0;
+            }
+            else if( winner == RoundState.Winner.secondPlayer ){
+                secondPlayerWon++;
+                secondPlayerByComparison += engine.roundState.winByComparison ? 1 : 0;
+            }
+            else if( winner == RoundState.Winner.none)
+                draws++;
+            else
+                wtfs++;
+        }
+
+        logger.println(firstPlayer.name + " vs. " + secondPlayer.name + " = " + firstPlayerWon + "/" + secondPlayerWon + "; " + firstPlayerByComparison + "/" + secondPlayerByComparison + "; Draws: " + draws + "; Wtfs: " + wtfs);
+        logger.println();
         logger.close();
 
         // assertTrue(firstPlayerWon > secondPlayerWon);

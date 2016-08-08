@@ -19,10 +19,10 @@ public class Human extends Player {
     @Override
     public DecisionType makeDecision(RoundState roundState, List<DecisionType> decisionList) {
         List<String> availableCommands = decisionList.stream().map(DecisionType::name).collect(Collectors.toList());
-        System.out.println("Opponent discarded deck: " + roundState.spaceOfSecondPlayer.discardedDeck + ". ");
+        System.out.println(" --- Opponent discarded deck: " + roundState.spaceOfSecondPlayer.discardedDeck + ". ");
         if( roundState.spaceOfFirstPlayer.knownEnemyCard != null )
-            System.out.println("You know enemy has " + roundState.spaceOfFirstPlayer.knownEnemyCard + " in his hand!");
-        System.out.println("Your cards: " +roundState.spaceOfFirstPlayer.hand+ ". Available decisions: " + availableCommands);
+            System.out.println(" --- You know enemy has " + roundState.spaceOfFirstPlayer.knownEnemyCard + " in his hand!");
+        System.out.println(" --- Your cards: " +roundState.spaceOfFirstPlayer.hand+ ". Available decisions: " + availableCommands);
         String command;
         do{
             command = user_input.nextLine();

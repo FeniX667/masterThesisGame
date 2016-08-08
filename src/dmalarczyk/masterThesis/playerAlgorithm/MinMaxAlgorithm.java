@@ -22,23 +22,30 @@ public class MinMaxAlgorithm extends Player {
         DecisionType finalDecision = null;
         Map<DecisionType, Pair<Double, Double>> decisionValueMap = new HashMap<>();
 
+        RoundState roundState = new RoundState(uncertainRoundState, playerSpace);
+        Map<CardType, Double> probabilityMap = roundState.getProbabilityMapForPlayer(this.playerSpace);
+
+        ArrayList<CardType> discard = uncertainRoundState.spaceOfSecondPlayer.discardedDeck;
+        if( discard.size() > 0 && discard.get(discard.size() - 1) == CardType.countess && decisionList.contains(DecisionType.guard_countess)){
+            if( probabilityMap.get(CardType.king) > 0 )
+                return DecisionType.guard_king;
+            if( probabilityMap.get(CardType.prince) > 0 )
+                return DecisionType.guard_prince;
+        }
+
         for( DecisionType decision : decisionList ){
             if( uncertainRoundState.deck.size() > 0) {
-                RoundState roundState = new RoundState(uncertainRoundState, playerSpace);
-                Map<CardType, Double> probabilityMap = roundState.getProbabilityMapForPlayer(this.playerSpace);
                 if (maxValue(decision, probabilityMap) - minValue(decision, probabilityMap, roundState) >
                         maxValue(finalDecision, probabilityMap) - minValue(decision, probabilityMap, roundState))
                     finalDecision = decision;
                 decisionValueMap.put(decision, new Pair<>(maxValue(decision, probabilityMap), minValue(decision, probabilityMap, roundState)));
             }
             else{
-                Map<CardType, Double> probabilityMap = uncertainRoundState.getProbabilityMapForPlayer(this.playerSpace);
                 if (maxValue(decision, probabilityMap) > maxValue(finalDecision, probabilityMap))
                     finalDecision = decision;
                 decisionValueMap.put(decision, new Pair<>(maxValue(decision, probabilityMap), minValue(decision, probabilityMap, uncertainRoundState)));
             }
         }
-
         return finalDecision;
     }
 
@@ -217,7 +224,7 @@ public class MinMaxAlgorithm extends Player {
             case guard_handmaid:
                 return 1.0 + probabilityMap.get(CardType.handmaid) + 0.008;
             case guard_prince:
-                return 1.0 + probabilityMap.get(CardType.prince) + 0.008;
+                return 1.0 + probabilityMap.get(CardType.prince) + 0.018;
             case guard_king:
                 return 1.0 + probabilityMap.get(CardType.king) + 0.008;
             case guard_countess:
@@ -236,9 +243,9 @@ public class MinMaxAlgorithm extends Player {
                     else if( CardType.getStrength(secondCard) > CardType.getStrength(opponentCard) )
                         winChance += probabilityMap.get(opponentCard);
                 }
-                return 1 - lossChance + winChance + 0.006;
+                return 1 - lossChance + winChance + 0.03;
             case handmaidPlay:
-                return 1 + 0.05;
+                return 1 + 0.005;
             case prince_onMyself:
                 CardType secondCard = this.playerSpace.getTheOtherCardInHand(CardType.prince);
                 if( secondCard == CardType.princess )

@@ -149,12 +149,14 @@ public class CLI {
     }
 
     private void startSingleGame() {
+        System.out.println("#################### Game Started! ####################");
         Engine engine = new Engine(firstPlayer, secondPlayer);
 
         engine.setLogPrintToConsole(true);
         if( firstPlayer instanceof Human || secondPlayer instanceof Human)
             engine.fullLog = false;
         engine.run();
+        System.out.println("##################### Game ended #####################");
     }
 
 }
