@@ -1,80 +1,48 @@
-GreedyAlgorithm vs. MinMaxAlgorithm = 5644/4247; 323/169; Draws: 109; Wtfs: 0
-MinMaxAlgorithm vs. GreedyAlgorithm = 5210/4698; 183/285; Draws: 92; Wtfs: 0
+MinMaxAlgorithm vs. GreedyAlgorithm = 5521/4402; 222/184; Draws: 77; Wtfs: 0
+GreedyAlgorithm vs. MinMaxAlgorithm = 5488/4417; 205/214; Draws: 95; Wtfs: 0
 
-GreedyAlgorithm vs. MinMaxAlgorithm = 5649/4268; 299/187; Draws: 83; Wtfs: 0
-MinMaxAlgorithm vs. GreedyAlgorithm = 5256/4670; 181/313; Draws: 74; Wtfs: 0
+MinMaxAlgorithm vs. GreedyAlgorithm = 5410/4495; 221/191; Draws: 95; Wtfs: 0
+GreedyAlgorithm vs. MinMaxAlgorithm = 5501/4424; 223/203; Draws: 75; Wtfs: 0
 
-GreedyAlgorithm vs. MinMaxAlgorithm = 5672/4239; 292/173; Draws: 89; Wtfs: 0
-MinMaxAlgorithm vs. GreedyAlgorithm = 5315/4607; 201/318; Draws: 78; Wtfs: 0
+MinMaxAlgorithm vs. GreedyAlgorithm = 5379/4551; 176/249; Draws: 70; Wtfs: 0
+GreedyAlgorithm vs. MinMaxAlgorithm = 5560/4360; 248/176; Draws: 80; Wtfs: 0
 
-GreedyAlgorithm vs. MinMaxAlgorithm = 5563/4332; 309/206; Draws: 105; Wtfs: 0
-MinMaxAlgorithm vs. GreedyAlgorithm = 5239/4659; 216/315; Draws: 102; Wtfs: 0
+MinMaxAlgorithm vs. GreedyAlgorithm = 5486/4466; 221/200; Draws: 48; Wtfs: 0
+GreedyAlgorithm vs. MinMaxAlgorithm = 5520/4393; 209/208; Draws: 87; Wtfs: 0
 
-GreedyAlgorithm vs. MinMaxAlgorithm = 5553/4344; 323/184; Draws: 103; Wtfs: 0
-MinMaxAlgorithm vs. GreedyAlgorithm = 5314/4605; 217/282; Draws: 81; Wtfs: 0
-MinMaxAlgorithm vs. GreedyAlgorithm = 5236/4681; 208/323; Draws: 83; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 10806/9015; 515/515; Draws: 179; Wtfs: 0
+MinMaxAlgorithm vs. GreedyAlgorithm = 5441/4492; 200/211; Draws: 67; Wtfs: 0
+GreedyAlgorithm vs. MinMaxAlgorithm = 5444/4490; 216/211; Draws: 66; Wtfs: 0
 
-MinMaxAlgorithm vs. GreedyAlgorithm = 5357/4559; 222/306; Draws: 84; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5615/4291; 329/208; Draws: 94; Wtfs: 0
+MinMaxAlgorithm vs. GreedyAlgorithm = 5517/4410; 213/207; Draws: 73; Wtfs: 0
+GreedyAlgorithm vs. MinMaxAlgorithm = 5542/4380; 235/212; Draws: 78; Wtfs: 0
 
-MinMaxAlgorithm vs. GreedyAlgorithm = 5383/4526; 210/294; Draws: 91; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5650/4266; 345/208; Draws: 84; Wtfs: 0
+MinMaxAlgorithm vs. GreedyAlgorithm = 5409/4512; 199/178; Draws: 79; Wtfs: 0
+GreedyAlgorithm vs. MinMaxAlgorithm = 5538/4390; 207/179; Draws: 72; Wtfs: 0
 
-MinMaxAlgorithm vs. GreedyAlgorithm = 5346/4577; 208/320; Draws: 77; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5604/4311; 326/179; Draws: 85; Wtfs: 0
+MinMaxAlgorithm vs. GreedyAlgorithm = 5431/4505; 210/194; Draws: 64; Wtfs: 0
+GreedyAlgorithm vs. MinMaxAlgorithm = 5420/4488; 193/193; Draws: 92; Wtfs: 0
 
-MinMaxAlgorithm vs. GreedyAlgorithm = 5287/4615; 224/326; Draws: 98; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5546/4376; 331/196; Draws: 78; Wtfs: 0
+MinMaxAlgorithm vs. GreedyAlgorithm = 5498/4424; 193/190; Draws: 78; Wtfs: 0
+GreedyAlgorithm vs. MinMaxAlgorithm = 5496/4428; 211/203; Draws: 76; Wtfs: 0
 
-MinMaxAlgorithm vs. GreedyAlgorithm = 5296/4593; 209/283; Draws: 111; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5580/4312; 290/195; Draws: 108; Wtfs: 0
+MinMaxAlgorithm vs. GreedyAlgorithm = 5434/4492; 211/223; Draws: 74; Wtfs: 0
+GreedyAlgorithm vs. MinMaxAlgorithm = 5545/4378; 195/185; Draws: 77; Wtfs: 0
 
-MinMaxAlgorithm vs. GreedyAlgorithm = 5312/4597; 214/315; Draws: 91; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5554/4348; 325/198; Draws: 98; Wtfs: 0
+MinMaxAlgorithm vs. GreedyAlgorithm = 5410/4508; 219/207; Draws: 82; Wtfs: 0
+GreedyAlgorithm vs. MinMaxAlgorithm = 5456/4458; 203/193; Draws: 86; Wtfs: 0
 
-MinMaxAlgorithm vs. GreedyAlgorithm = 5252/4669; 176/317; Draws: 79; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5599/4301; 331/184; Draws: 100; Wtfs: 0
+MinMaxAlgorithm vs. GreedyAlgorithm = 5505/4425; 212/199; Draws: 70; Wtfs: 0
+GreedyAlgorithm vs. MinMaxAlgorithm = 5427/4485; 200/220; Draws: 88; Wtfs: 0
 
-MinMaxAlgorithm vs. GreedyAlgorithm = 5400/4508; 201/336; Draws: 92; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5626/4282; 323/195; Draws: 92; Wtfs: 0
+MinMaxAlgorithm vs. GreedyAlgorithm = 5493/4431; 196/212; Draws: 76; Wtfs: 0
+GreedyAlgorithm vs. MinMaxAlgorithm = 5426/4474; 231/202; Draws: 100; Wtfs: 0
 
-MinMaxAlgorithm vs. GreedyAlgorithm = 5339/4579; 184/326; Draws: 82; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5556/4324; 327/197; Draws: 120; Wtfs: 0
+MinMaxAlgorithm vs. GreedyAlgorithm = 5492/4422; 188/209; Draws: 86; Wtfs: 0
+GreedyAlgorithm vs. MinMaxAlgorithm = 5453/4468; 211/192; Draws: 79; Wtfs: 0
 
-MinMaxAlgorithm vs. GreedyAlgorithm = 5285/4635; 200/249; Draws: 80; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5631/4285; 274/205; Draws: 84; Wtfs: 0
+MinMaxAlgorithm vs. GreedyAlgorithm = 5557/4370; 197/197; Draws: 73; Wtfs: 0
+GreedyAlgorithm vs. MinMaxAlgorithm = 5399/4524; 177/195; Draws: 77; Wtfs: 0
 
-MinMaxAlgorithm vs. GreedyAlgorithm = 5343/4574; 193/337; Draws: 83; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5674/4249; 321/187; Draws: 77; Wtfs: 0
-
-MinMaxAlgorithm vs. GreedyAlgorithm = 5328/4591; 222/257; Draws: 81; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5590/4330; 275/193; Draws: 80; Wtfs: 0
-
-MinMaxAlgorithm vs. GreedyAlgorithm = 5287/4633; 186/247; Draws: 80; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5682/4247; 263/216; Draws: 71; Wtfs: 0
-
-MinMaxAlgorithm vs. GreedyAlgorithm = 5279/4649; 184/240; Draws: 72; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5628/4286; 231/206; Draws: 86; Wtfs: 0
-
-MinMaxAlgorithm vs. GreedyAlgorithm = 5314/4621; 178/259; Draws: 65; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5548/4382; 246/170; Draws: 70; Wtfs: 0
-
-MinMaxAlgorithm vs. GreedyAlgorithm = 5354/4573; 199/258; Draws: 73; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5594/4330; 250/196; Draws: 76; Wtfs: 0
-
-MinMaxAlgorithm vs. GreedyAlgorithm = 5339/4580; 191/258; Draws: 81; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5597/4319; 221/194; Draws: 84; Wtfs: 0
-
-MinMaxAlgorithm vs. GreedyAlgorithm = 5328/4606; 179/246; Draws: 66; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5549/4372; 232/167; Draws: 79; Wtfs: 0
-
-MinMaxAlgorithm vs. GreedyAlgorithm = 5369/4569; 203/221; Draws: 62; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5548/4367; 246/189; Draws: 85; Wtfs: 0
-
-MinMaxAlgorithm vs. GreedyAlgorithm = 5301/4630; 162/233; Draws: 69; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5500/4420; 255/163; Draws: 80; Wtfs: 0
-
-MinMaxAlgorithm vs. GreedyAlgorithm = 5370/4543; 206/228; Draws: 87; Wtfs: 0
-GreedyAlgorithm vs. MinMaxAlgorithm = 5582/4330; 270/165; Draws: 88; Wtfs: 0
+MinMaxAlgorithm vs. GreedyAlgorithm = 5521/4407; 226/182; Draws: 72; Wtfs: 0
+GreedyAlgorithm vs. MinMaxAlgorithm = 5408/4528; 185/183; Draws: 64; Wtfs: 0
 

@@ -14,40 +14,81 @@ public class MinMaxAlgorithm extends Player {
         this.name = "MinMaxAlgorithm";
     }
 
-
     @Override
     public DecisionType makeDecision(RoundState uncertainRoundState, List<DecisionType> decisionList) {
         if( !uncertainRoundState.spaceOfFirstPlayer.hand.containsAll(this.playerSpace.hand) )
             throw new RoundCopyMismatchException();
         DecisionType finalDecision = null;
-        Map<DecisionType, Pair<Double, Double>> decisionValueMap = new HashMap<>();
 
-        RoundState roundState = new RoundState(uncertainRoundState, playerSpace);
-        Map<CardType, Double> probabilityMap = roundState.getProbabilityMapForPlayer(this.playerSpace);
-
-        ArrayList<CardType> discard = uncertainRoundState.spaceOfSecondPlayer.discardedDeck;
-        if( discard.size() > 0 && discard.get(discard.size() - 1) == CardType.countess && decisionList.contains(DecisionType.guard_countess)){
-            if( probabilityMap.get(CardType.king) > 0 )
-                return DecisionType.guard_king;
-            if( probabilityMap.get(CardType.prince) > 0 )
-                return DecisionType.guard_prince;
-        }
 
         for( DecisionType decision : decisionList ){
+            RoundState roundState = new RoundState(uncertainRoundState, playerSpace);
+            Map<CardType, Double> probabilityMap = getProbabilityMap(roundState, decisionList);
             if( uncertainRoundState.deck.size() > 0) {
-                if (maxValue(decision, probabilityMap) - minValue(decision, probabilityMap, roundState) >
+                if (maxValue(decision, probabilityMap) - minValue(decision, probabilityMap, roundState) >=
                         maxValue(finalDecision, probabilityMap) - minValue(decision, probabilityMap, roundState))
                     finalDecision = decision;
-                decisionValueMap.put(decision, new Pair<>(maxValue(decision, probabilityMap), minValue(decision, probabilityMap, roundState)));
             }
             else{
-                if (maxValue(decision, probabilityMap) > maxValue(finalDecision, probabilityMap))
+                if (maxValue(decision, probabilityMap) >= maxValue(finalDecision, probabilityMap))
                     finalDecision = decision;
-                decisionValueMap.put(decision, new Pair<>(maxValue(decision, probabilityMap), minValue(decision, probabilityMap, uncertainRoundState)));
             }
         }
         return finalDecision;
     }
+
+    private Map<CardType, Double> getProbabilityMap(RoundState roundState, List<DecisionType> decisionList){
+
+        Map<CardType, Double> probabilityMap = roundState.getProbabilityMapForPlayer(this.playerSpace);
+        Map<CardType, Double> updatedProbabilityMap =  new HashMap<>();
+
+        ArrayList<CardType> discard = roundState.spaceOfSecondPlayer.discardedDeck;
+        if( discard.size() > 0 && discard.get(discard.size() - 1) == CardType.countess
+                && ( probabilityMap.get(CardType.prince) > 0 || probabilityMap.get(CardType.king) > 0 ) ){
+            if( probabilityMap.get(CardType.prince) > 0 && probabilityMap.get(CardType.king) > 0){
+                if( probabilityMap.get(CardType.prince) > probabilityMap.get(CardType.king) ) {
+                    for (CardType cardType : EnumSet.allOf(CardType.class)) {
+                        if (cardType == CardType.prince)
+                            updatedProbabilityMap.put(cardType, 0.66);
+                        else if (cardType == CardType.king)
+                            updatedProbabilityMap.put(cardType, 0.33);
+                        else
+                            updatedProbabilityMap.put(cardType, 0.00);
+                    }
+                }
+                else{
+                    for (CardType cardType : EnumSet.allOf(CardType.class)) {
+                        if (cardType == CardType.prince)
+                            updatedProbabilityMap.put(cardType, 0.5);
+                        else if (cardType == CardType.king)
+                            updatedProbabilityMap.put(cardType, 0.5);
+                        else
+                            updatedProbabilityMap.put(cardType, 0.00);
+                    }
+                }
+            }
+            else if(probabilityMap.get(CardType.prince) > 0){
+                for (CardType cardType : EnumSet.allOf(CardType.class)) {
+                    if (cardType == CardType.prince)
+                        updatedProbabilityMap.put(cardType, 1.0);
+                    else
+                        updatedProbabilityMap.put(cardType, 0.00);
+                }
+            }
+            else if(probabilityMap.get(CardType.king) > 0){
+                for (CardType cardType : EnumSet.allOf(CardType.class)) {
+                    if (cardType == CardType.king)
+                        updatedProbabilityMap.put(cardType, 1.0);
+                    else
+                        updatedProbabilityMap.put(cardType, 0.00);
+                }
+            }
+            return updatedProbabilityMap;
+        }
+
+        return probabilityMap;
+    }
+
 
     private double minValue(DecisionType decision, Map<CardType, Double> probabilityMap, RoundState roundState) {
         double minValue = 0.0;
@@ -224,7 +265,7 @@ public class MinMaxAlgorithm extends Player {
             case guard_handmaid:
                 return 1.0 + probabilityMap.get(CardType.handmaid) + 0.008;
             case guard_prince:
-                return 1.0 + probabilityMap.get(CardType.prince) + 0.018;
+                return 1.0 + probabilityMap.get(CardType.prince) + 0.008;
             case guard_king:
                 return 1.0 + probabilityMap.get(CardType.king) + 0.008;
             case guard_countess:
@@ -243,7 +284,7 @@ public class MinMaxAlgorithm extends Player {
                     else if( CardType.getStrength(secondCard) > CardType.getStrength(opponentCard) )
                         winChance += probabilityMap.get(opponentCard);
                 }
-                return 1 - lossChance + winChance + 0.03;
+                return 1 - lossChance + winChance + 0.006;
             case handmaidPlay:
                 return 1 + 0.005;
             case prince_onMyself:
