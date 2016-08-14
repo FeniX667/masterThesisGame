@@ -11,7 +11,6 @@ public enum DecisionType {
     prince_onOpponent,
     prince_onMyself,
     kingPlay,
-    countess_withKingOrPrince,
     countessPlay,
     princessPlay;
 
@@ -44,20 +43,21 @@ public enum DecisionType {
                 decisionList.add(handmaidPlay);
                 break;
             case prince:
-                decisionList.add(prince_onMyself);
-                decisionList.add(prince_onOpponent);
+                if( secondCard!=CardType.countess ){
+                    decisionList.add(prince_onMyself);
+                    decisionList.add(prince_onOpponent);
+                }
                 break;
             case king:
-                decisionList.add(kingPlay);
+                if( secondCard!=CardType.countess )
+                    decisionList.add(kingPlay);
                 break;
             case countess:
-                if( secondCard==CardType.king || secondCard==CardType.prince)
-                    decisionList.add(countess_withKingOrPrince);
-                else
-                    decisionList.add(countessPlay);
+                decisionList.add(countessPlay);
                 break;
             case princess:
                 decisionList.add(princessPlay);
+                break;
         }
 
         return  decisionList;

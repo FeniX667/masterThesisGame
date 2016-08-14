@@ -73,8 +73,6 @@ public class GreedyAlgorithm extends Player {
                 return 1 + probabilityMap.get(CardType.princess) + 0.004;
             case kingPlay:
                 return 1 + probabilityMap.get(CardType.princess) + probabilityMap.get(CardType.countess) + 0.003;
-            case countess_withKingOrPrince:
-                return 10 + 0.002;
             case countessPlay:
                 return 1+ 0.002;
             case princessPlay:

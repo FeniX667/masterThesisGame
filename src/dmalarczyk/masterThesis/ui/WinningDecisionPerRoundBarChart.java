@@ -53,7 +53,6 @@ public class WinningDecisionPerRoundBarChart extends JFrame {
         decisions.add(DecisionType.prince_onOpponent);
         decisions.add(DecisionType.kingPlay);
         decisions.add(DecisionType.countessPlay);
-        decisions.add(DecisionType.countess_withKingOrPrince);
         decisions.add(DecisionType.princessPlay);
 
         for( int i = 1 ; i < 11 ; i++ ){

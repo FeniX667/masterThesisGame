@@ -167,9 +167,6 @@ public class Engine {
             case countessPlay:
                 countessPlay(decisionMakerSpace);
                 break;
-            case countess_withKingOrPrince:
-                countessPlay(decisionMakerSpace);
-                break;
             case princessPlay:
                 princessPlay(decisionMakerSpace);
                 break;
