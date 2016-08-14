@@ -4,14 +4,19 @@ import dmalarczyk.masterThesis.gameEngine.GameStatistics;
 import dmalarczyk.masterThesis.gameModel.DecisionType;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -28,6 +33,12 @@ public class WinningDecisionPerRoundBarChart extends JFrame {
         chartPanel.setPreferredSize( new Dimension(700, 400));
 
         setContentPane(chartPanel);
+
+        try {
+            ChartUtilities.saveChartAsPNG(new File("decision.png"), chart, 1050, 600, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private CategoryDataset createDataSet(List<GameStatistics> gameStatistics) {
@@ -41,7 +52,7 @@ public class WinningDecisionPerRoundBarChart extends JFrame {
         decisions.add(DecisionType.prince_onMyself);
         decisions.add(DecisionType.prince_onOpponent);
         decisions.add(DecisionType.kingPlay);
-        decisions.add(DecisionType.countess_defaultPlay);
+        decisions.add(DecisionType.countessPlay);
         decisions.add(DecisionType.countess_withKingOrPrince);
         decisions.add(DecisionType.princessPlay);
 
@@ -73,11 +84,7 @@ public class WinningDecisionPerRoundBarChart extends JFrame {
                 chartTitle, "Round", "Wins", dataSet, PlotOrientation.VERTICAL, true, true, false);
 
         CategoryPlot plot =  chart.getCategoryPlot();
-
-//        int seriesCount = plot.getDatasetCount();
-//        for (int i = 0; i < seriesCount; i++) {
-//            plot.getRenderer().setSeriesStroke(i, new BasicStroke(2));
-//        }
+        ((BarRenderer) plot.getRenderer()).setBarPainter(new StandardBarPainter());
 
         return chart;
     }

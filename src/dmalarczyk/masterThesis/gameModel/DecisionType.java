@@ -12,7 +12,7 @@ public enum DecisionType {
     prince_onMyself,
     kingPlay,
     countess_withKingOrPrince,
-    countess_defaultPlay,
+    countessPlay,
     princessPlay;
 
     public static ArrayList<DecisionType> getDecisions(ArrayList<CardType> hand){
@@ -54,7 +54,7 @@ public enum DecisionType {
                 if( secondCard==CardType.king || secondCard==CardType.prince)
                     decisionList.add(countess_withKingOrPrince);
                 else
-                    decisionList.add(countess_defaultPlay);
+                    decisionList.add(countessPlay);
                 break;
             case princess:
                 decisionList.add(princessPlay);

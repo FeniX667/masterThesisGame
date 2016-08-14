@@ -32,7 +32,7 @@ public class DecisionTypeTest {
                 {7, Arrays.asList(DecisionType.guard_priest, DecisionType.guard_baron, DecisionType.guard_handmaid,
                         DecisionType.guard_prince, DecisionType.guard_king, DecisionType.guard_countess, DecisionType.guard_princess),
                 CardType.guard, CardType.guard },
-                {2, Arrays.asList(DecisionType.countess_defaultPlay, DecisionType.baronPlay),
+                {2, Arrays.asList(DecisionType.countessPlay, DecisionType.baronPlay),
                         CardType.countess, CardType.baron },
                 {3, Arrays.asList(DecisionType.prince_onMyself, DecisionType.prince_onOpponent, DecisionType.countess_withKingOrPrince),
                         CardType.prince, CardType.countess },

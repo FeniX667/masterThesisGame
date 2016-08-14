@@ -151,7 +151,7 @@ public class MinMaxAlgorithm extends Player {
             case countess_withKingOrPrince:
                 roundState.discardPlayedCard(roundState.spaceOfFirstPlayer, CardType.countess);
                 return reactionLossChance(roundState, CardType.countess);
-            case countess_defaultPlay:
+            case countessPlay:
                 roundState.discardPlayedCard(roundState.spaceOfFirstPlayer, CardType.countess);
                 return reactionLossChance(roundState, CardType.countess);
             case princessPlay:
@@ -318,7 +318,7 @@ public class MinMaxAlgorithm extends Player {
                 return 1 + probabilityMap.get(CardType.princess) + probabilityMap.get(CardType.countess) + 0.003;
             case countess_withKingOrPrince:
                 return 10 + 0.002;
-            case countess_defaultPlay:
+            case countessPlay:
                 return 1+ 0.002;
             case princessPlay:
                 return 0;

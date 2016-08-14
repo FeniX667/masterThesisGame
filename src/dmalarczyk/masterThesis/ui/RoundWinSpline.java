@@ -4,6 +4,7 @@ import dmalarczyk.masterThesis.gameEngine.GameStatistics;
 import dmalarczyk.masterThesis.gameModel.RoundState;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
@@ -13,6 +14,8 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -31,6 +34,12 @@ public class RoundWinSpline extends JFrame {
         chartPanel.setPreferredSize( new Dimension(500, 270));
 
         setContentPane(chartPanel);
+
+        try {
+            ChartUtilities.saveChartAsPNG(new File("roundWin.png"), chart, 1000, 540, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private XYDataset createDataSet(List<GameStatistics> gameStatistics) {

@@ -4,16 +4,20 @@ import dmalarczyk.masterThesis.gameEngine.GameStatistics;
 import dmalarczyk.masterThesis.gameModel.RoundState;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.labels.PieSectionLabelGenerator;
+import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
 import org.jfree.chart.plot.PiePlot;
-import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
-import org.jfree.data.xy.DefaultTableXYDataset;
 import org.jfree.util.Rotation;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class WinChart extends JFrame {
@@ -29,6 +33,12 @@ public class WinChart extends JFrame {
         chartPanel.setPreferredSize( new Dimension(500, 270));
 
         setContentPane(chartPanel);
+
+        try {
+            ChartUtilities.saveChartAsPNG(new File("win.png"), chart, 1000, 540, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private DefaultPieDataset  createDataSet(List<GameStatistics> gameStatistics) {
@@ -45,14 +55,16 @@ public class WinChart extends JFrame {
         DefaultPieDataset result = new DefaultPieDataset ();
         result.setValue("First player", firstWins);
         result.setValue("Second player", secondWins);
-
         return result;
     }
 
     private JFreeChart createChart(PieDataset dataSet, String chartTitle) {
         JFreeChart chart = ChartFactory.createPieChart(chartTitle, dataSet);
+        PieSectionLabelGenerator gen = new StandardPieSectionLabelGenerator(
+                "{0}: {1} ({2})", new DecimalFormat("0"), new DecimalFormat("0%"));
 
         PiePlot plot = (PiePlot) chart.getPlot();
+        plot.setLabelGenerator(gen);
         plot.setDirection(Rotation.CLOCKWISE);
         return chart;
     }

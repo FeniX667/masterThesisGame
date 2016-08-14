@@ -164,7 +164,7 @@ public class Engine {
             case kingPlay:
                 kingPlay(decisionMakerSpace, opponentSpace);
                 break;
-            case countess_defaultPlay:
+            case countessPlay:
                 countessPlay(decisionMakerSpace);
                 break;
             case countess_withKingOrPrince:
