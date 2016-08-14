@@ -290,15 +290,10 @@ public class Engine {
                 log.appendln("Ending move: " + statistics.winningMove);
         }
 
-
         log.appendln("");
         log.appendln("Cards remaining in deck: " + roundState.deck);
         log.appendln("First player discarded: " + firstPlayer.playerSpace.discardedDeck);
         log.appendln("Second player discarded: " + secondPlayer.playerSpace.discardedDeck);
-    }
-
-    public void printCurrentProbabilityMapForPlayer(PlayerSpace playerSpace) {
-        log.appendln(roundState.getProbabilityMapForPlayer(playerSpace).toString());
     }
 
     public void setLogPrintToConsole(boolean flag){

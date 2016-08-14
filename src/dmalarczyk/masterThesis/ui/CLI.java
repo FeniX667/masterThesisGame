@@ -2,6 +2,7 @@ package dmalarczyk.masterThesis.ui;
 
 import dmalarczyk.masterThesis.gameEngine.Engine;
 import dmalarczyk.masterThesis.gameEngine.GameStatistics;
+import dmalarczyk.masterThesis.gameModel.RoundState;
 import dmalarczyk.masterThesis.playerAlgorithm.*;
 
 import java.io.File;
@@ -103,23 +104,43 @@ public class CLI {
         System.out.println("Game starts.");
         List<GameStatistics> statistics  = new ArrayList<>();
         PrintWriter writer;
+
+        int firstPlayerWon = 0;
+        int firstPlayerByComparison = 0;
+        int secondPlayerWon = 0;
+        int secondPlayerByComparison = 0;
+        int draws = 0;
+
         for( int i = roundCount ; i > 0 ; i--) {
             Engine engine = new Engine(firstPlayer, secondPlayer);
 
             engine.run();
 
-            try {
-                writer = new PrintWriter(
-                        (new FileOutputStream(new File("gameLog.txt"), true)));
-                writer.print( engine.log.toString() );
-                writer.print("--------------------------------------------" + engine.log.eol);
-                writer.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+            RoundState.Winner winner = engine.roundState.winner;
+
+            if( winner == RoundState.Winner.firstPlayer){
+                firstPlayerWon++;
+                firstPlayerByComparison += engine.roundState.winByComparison ? 1 : 0;
             }
+            else if( winner == RoundState.Winner.secondPlayer ){
+                secondPlayerWon++;
+                secondPlayerByComparison += engine.roundState.winByComparison ? 1 : 0;
+            }
+            else if( winner == RoundState.Winner.none)
+                draws++;
             statistics.add(engine.statistics);
         }
         showResultsOnCharts(statistics);
+
+        try {
+            PrintWriter logger = new PrintWriter(
+                    (new FileOutputStream( new File("simulationLog.txt"), true)));
+            logger.println(firstPlayer.name + " vs. " + secondPlayer.name + " = " + firstPlayerWon + "/" + secondPlayerWon + "; Wins by comparison (included) " + firstPlayerByComparison + "/" + secondPlayerByComparison + "; Draws: " + draws);
+            logger.println();
+            logger.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         System.out.print("Game ended. Check simulationLog.txt for further informations.");
     }

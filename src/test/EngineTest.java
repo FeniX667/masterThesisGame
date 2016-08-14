@@ -68,17 +68,14 @@ public class EngineTest {
         int firstPlayerByComparison = 0;
         int secondPlayerWon = 0;
         int secondPlayerByComparison = 0;
-        int wtfs = 0;
         int draws = 0;
-        Player firstPlayer = new MinMaxAlgorithm();
-        Player secondPlayer = new GreedyAlgorithm();
+        Player firstPlayer = new RandomAlgorithm();
+        Player secondPlayer = new RandomAlgorithm();
 
-        for( int i = 10000 ; i > 0 ; i--) {
+        for( int i = 50000 ; i > 0 ; i--) {
             Engine engine = new Engine(firstPlayer, secondPlayer);
 
             engine.run();
-            // engine.closeGame();
-            // engine.printCurrentProbabilityMap();
             RoundState.Winner winner = engine.roundState.winner;
 
             if( winner == RoundState.Winner.firstPlayer){
@@ -91,44 +88,26 @@ public class EngineTest {
             }
             else if( winner == RoundState.Winner.none)
                 draws++;
-            else
-                wtfs++;
-        }
 
-        logger.println(firstPlayer.name + " vs. " + secondPlayer.name + " = " + firstPlayerWon + "/" + secondPlayerWon + "; " + firstPlayerByComparison + "/" + secondPlayerByComparison + "; Draws: " + draws + "; Wtfs: " + wtfs);
 
-        firstPlayerWon = 0;
-        firstPlayerByComparison = 0;
-        secondPlayerWon = 0;
-        secondPlayerByComparison = 0;
-        wtfs = 0;
-        draws = 0;
-        firstPlayer = new GreedyAlgorithm();
-        secondPlayer = new MinMaxAlgorithm();
+            Engine engine2 = new Engine(secondPlayer, firstPlayer);
 
-        for( int i = 10000 ; i > 0 ; i--) {
-            Engine engine = new Engine(firstPlayer, secondPlayer);
+            engine2.run();
+            RoundState.Winner winner2 = engine2.roundState.winner;
 
-            engine.run();
-            // engine.closeGame();
-            // engine.printCurrentProbabilityMap();
-            RoundState.Winner winner = engine.roundState.winner;
-
-            if( winner == RoundState.Winner.firstPlayer){
+            if( winner2 == RoundState.Winner.secondPlayer){
                 firstPlayerWon++;
-                firstPlayerByComparison += engine.roundState.winByComparison ? 1 : 0;
+                firstPlayerByComparison += engine2.roundState.winByComparison ? 1 : 0;
             }
-            else if( winner == RoundState.Winner.secondPlayer ){
+            else if( winner2 == RoundState.Winner.firstPlayer ){
                 secondPlayerWon++;
-                secondPlayerByComparison += engine.roundState.winByComparison ? 1 : 0;
+                secondPlayerByComparison += engine2.roundState.winByComparison ? 1 : 0;
             }
-            else if( winner == RoundState.Winner.none)
+            else if( winner2 == RoundState.Winner.none)
                 draws++;
-            else
-                wtfs++;
         }
 
-        logger.println(firstPlayer.name + " vs. " + secondPlayer.name + " = " + firstPlayerWon + "/" + secondPlayerWon + "; " + firstPlayerByComparison + "/" + secondPlayerByComparison + "; Draws: " + draws + "; Wtfs: " + wtfs);
+        logger.println(firstPlayer.name + " vs. " + secondPlayer.name + " = " + firstPlayerWon + "/" + secondPlayerWon + "; Wins by comparison (included) " + firstPlayerByComparison + "/" + secondPlayerByComparison + "; Draws: " + draws);
         logger.println();
         logger.close();
 

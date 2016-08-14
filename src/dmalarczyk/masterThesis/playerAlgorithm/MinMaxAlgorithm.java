@@ -23,13 +23,14 @@ public class MinMaxAlgorithm extends Player {
 
         for( DecisionType decision : decisionList ){
             RoundState roundState = new RoundState(uncertainRoundState, playerSpace);
-            Map<CardType, Double> probabilityMap = getProbabilityMap(roundState, decisionList);
             if( uncertainRoundState.deck.size() > 0) {
+                Map<CardType, Double> probabilityMap = getProbabilityMap(roundState);
                 if (maxValue(decision, probabilityMap) - minValue(decision, probabilityMap, roundState) >=
-                        maxValue(finalDecision, probabilityMap) - minValue(decision, probabilityMap, roundState))
+                        maxValue(finalDecision, probabilityMap) - minValue(decision, probabilityMap, roundState) )
                     finalDecision = decision;
             }
             else{
+                Map<CardType, Double> probabilityMap = uncertainRoundState.getProbabilityMapForPlayer(this.playerSpace);
                 if (maxValue(decision, probabilityMap) >= maxValue(finalDecision, probabilityMap))
                     finalDecision = decision;
             }
@@ -37,7 +38,7 @@ public class MinMaxAlgorithm extends Player {
         return finalDecision;
     }
 
-    private Map<CardType, Double> getProbabilityMap(RoundState roundState, List<DecisionType> decisionList){
+    private Map<CardType, Double> getProbabilityMap(RoundState roundState){
 
         Map<CardType, Double> probabilityMap = roundState.getProbabilityMapForPlayer(this.playerSpace);
         Map<CardType, Double> updatedProbabilityMap =  new HashMap<>();
@@ -97,22 +98,31 @@ public class MinMaxAlgorithm extends Player {
 
         switch (decision) {
             case guard_priest:
+                roundState.discardPlayedCard(roundState.spaceOfFirstPlayer, CardType.guard);
                 return (1.0 - probabilityMap.get(CardType.priest)) * reactionLossChance(roundState, CardType.guard);
             case guard_baron:
+                roundState.discardPlayedCard(roundState.spaceOfFirstPlayer, CardType.guard);
                 return (1.0 - probabilityMap.get(CardType.baron)) * reactionLossChance(roundState, CardType.guard);
             case guard_handmaid:
+                roundState.discardPlayedCard(roundState.spaceOfFirstPlayer, CardType.guard);
                 return (1.0 - probabilityMap.get(CardType.handmaid)) * reactionLossChance(roundState, CardType.guard);
             case guard_prince:
+                roundState.discardPlayedCard(roundState.spaceOfFirstPlayer, CardType.guard);
                 return (1.0 - probabilityMap.get(CardType.prince)) * reactionLossChance(roundState, CardType.guard);
             case guard_king:
+                roundState.discardPlayedCard(roundState.spaceOfFirstPlayer, CardType.guard);
                 return (1.0 - probabilityMap.get(CardType.king)) * reactionLossChance(roundState, CardType.guard);
             case guard_countess:
+                roundState.discardPlayedCard(roundState.spaceOfFirstPlayer, CardType.guard);
                 return (1.0 - probabilityMap.get(CardType.countess)) * reactionLossChance(roundState, CardType.guard);
             case guard_princess:
+                roundState.discardPlayedCard(roundState.spaceOfFirstPlayer, CardType.guard);
                 return (1.0 - probabilityMap.get(CardType.princess)) * reactionLossChance(roundState, CardType.guard);
             case priestPlay:
+                roundState.discardPlayedCard(roundState.spaceOfFirstPlayer, CardType.priest);
                 return reactionLossChance(roundState, CardType.priest);
             case baronPlay:
+                roundState.discardPlayedCard(roundState.spaceOfFirstPlayer, CardType.baron);
                 double drawChance = probabilityMap.get( this.playerSpace.getTheOtherCardInHand(CardType.baron) );
                 return drawChance * reactionLossChance(roundState, CardType.baron);
             case handmaidPlay:
@@ -120,19 +130,29 @@ public class MinMaxAlgorithm extends Player {
             case prince_onMyself:
                 CardType secondCard = this.playerSpace.getTheOtherCardInHand(CardType.prince);
                 if (secondCard == CardType.princess)
-                    return 0.0;
+                    return 10.0;
                 else{
-                    roundState.discardPlayedCard(roundState.spaceOfFirstPlayer, roundState.spaceOfFirstPlayer.getTheOtherCardInHand(CardType.prince));
+                    roundState.discardPlayedCard(roundState.spaceOfFirstPlayer, secondCard);
+                    roundState.discardPlayedCard(roundState.spaceOfFirstPlayer, CardType.prince);
                     roundState.drawCardForPlayerSpace(roundState.spaceOfFirstPlayer);
                     return reactionLossChance(roundState, CardType.prince);
                 }
             case prince_onOpponent:
+                roundState.discardPlayedCard(roundState.spaceOfFirstPlayer, CardType.prince);
                 return (1.0 - probabilityMap.get(CardType.princess) * reactionLossChance(roundState, CardType.prince));
             case kingPlay:
+                roundState.discardPlayedCard(roundState.spaceOfFirstPlayer, CardType.king);
+                secondCard = roundState.spaceOfFirstPlayer.hand.remove(0);
+                roundState.spaceOfFirstPlayer.hand.add(roundState.spaceOfSecondPlayer.hand.remove(0));
+                roundState.spaceOfSecondPlayer.hand.add(secondCard);
+                roundState.spaceOfFirstPlayer.knownEnemyCard = roundState.spaceOfSecondPlayer.hand.get(0);
+                roundState.spaceOfSecondPlayer.knownEnemyCard = roundState.spaceOfFirstPlayer.hand.get(0);
                 return reactionLossChance(roundState, CardType.king);
             case countess_withKingOrPrince:
+                roundState.discardPlayedCard(roundState.spaceOfFirstPlayer, CardType.countess);
                 return reactionLossChance(roundState, CardType.countess);
             case countess_defaultPlay:
+                roundState.discardPlayedCard(roundState.spaceOfFirstPlayer, CardType.countess);
                 return reactionLossChance(roundState, CardType.countess);
             case princessPlay:
                 return 10.0;
@@ -151,10 +171,8 @@ public class MinMaxAlgorithm extends Player {
 
         for( Pair<CardType, CardType> opponentHand : opponentHandProbabilityMap.keySet()){
             List<CardType> cardsHiddenForEnemy = roundState.getHiddenCards();
-            CardType mySecondCard = playerSpace.getTheOtherCardInHand(droppedCard);
             cardsHiddenForEnemy.remove(opponentHand.getKey());
             cardsHiddenForEnemy.remove(opponentHand.getValue());
-            cardsHiddenForEnemy.remove(mySecondCard);
 
             Map<CardType, Double> opponentProbabilityMap = RoundState.getProbabilityMap(cardsHiddenForEnemy);
             List<DecisionType> opponentDecisions = DecisionType.getDecisions(opponentHand.getKey(), opponentHand.getValue());
@@ -167,6 +185,7 @@ public class MinMaxAlgorithm extends Player {
                 decisionValueMap.put(decision, maxValue(opponentDecision, opponentProbabilityMap) );
             }
 
+            CardType mySecondCard = playerSpace.getTheOtherCardInHand(droppedCard);
             switch (opponentDecision){
                 case guard_priest:
                     handDecisionLossChanceMap.put(opponentHand, new Pair<>( opponentDecision, (double) (mySecondCard == CardType.priest ? 1 : 0)) );
