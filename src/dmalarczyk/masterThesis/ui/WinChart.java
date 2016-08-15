@@ -44,17 +44,21 @@ public class WinChart extends JFrame {
     private DefaultPieDataset  createDataSet(List<GameStatistics> gameStatistics) {
         int firstWins = 0;
         int secondWins = 0;
+        int draws = 0;
 
         for(GameStatistics statistics : gameStatistics){
             if( statistics.winner == RoundState.Winner.firstPlayer)
                 firstWins++;
-            else
+            else if( statistics.winner == RoundState.Winner.secondPlayer)
                 secondWins++;
+            else
+                draws++;
         }
 
         DefaultPieDataset result = new DefaultPieDataset ();
-        result.setValue("First player", firstWins);
         result.setValue("Second player", secondWins);
+        result.setValue("Draws", draws);
+        result.setValue("First player", firstWins);
         return result;
     }
 

@@ -1,6 +1,7 @@
 package dmalarczyk.masterThesis.playerAlgorithm;
 
 import dmalarczyk.masterThesis.gameEngine.Engine;
+import dmalarczyk.masterThesis.gameModel.CardType;
 import dmalarczyk.masterThesis.gameModel.DecisionType;
 import dmalarczyk.masterThesis.gameModel.RoundState;
 
@@ -66,7 +67,15 @@ public class MctsAlgorithm extends Player {
 
             Node mostProvenChild = children.get(0);
             for( Node child : children ){
-                if( child.visits > mostProvenChild.visits)
+                if( mostProvenChild.decision == DecisionType.princessPlay )
+                    mostProvenChild = child;
+                else if(mostProvenChild.decision == DecisionType.prince_onMyself){
+                    List<CardType> discard = mostProvenChild.roundState.spaceOfFirstPlayer.discardedDeck;
+                    List<CardType> hand = mostProvenChild.roundState.spaceOfFirstPlayer.hand;
+                    if( discard.contains(CardType.princess) || hand.contains(CardType.princess) )
+                        mostProvenChild = child;
+                }
+                else if( child.visits > mostProvenChild.visits )
                     mostProvenChild = child;
             }
 

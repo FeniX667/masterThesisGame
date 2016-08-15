@@ -12,3 +12,21 @@ GreedyAlgorithm vs. RandomAlgorithm = 671/314; Wins by comparison (included) 35/
 
 GreedyAlgorithm vs. RandomAlgorithm = 691/303; Wins by comparison (included) 34/22; Draws: 6
 
+GreedyAlgorithm vs. RandomAlgorithm = 670/318; Wins by comparison (included) 40/26; Draws: 12
+
+GreedyAlgorithm vs. RandomAlgorithm = 687/303; Wins by comparison (included) 43/28; Draws: 10
+
+GreedyAlgorithm vs. RandomAlgorithm = 675/316; Wins by comparison (included) 32/22; Draws: 9
+
+GreedyAlgorithm vs. RandomAlgorithm = 698/291; Wins by comparison (included) 54/17; Draws: 11
+
+GreedyAlgorithm vs. RandomAlgorithm = 675/316; Wins by comparison (included) 41/24; Draws: 9
+
+GreedyAlgorithm vs. RandomAlgorithm = 680/311; Wins by comparison (included) 58/34; Draws: 9
+
+GreedyAlgorithm vs. RandomAlgorithm = 677/308; Wins by comparison (included) 38/23; Draws: 15
+
+MctsAlgorithm vs. RandomAlgorithm = 360/625; Wins by comparison (included) 39/63; Draws: 15
+
+MctsAlgorithm vs. RandomAlgorithm = 453/520; Wins by comparison (included) 66/68; Draws: 27
+

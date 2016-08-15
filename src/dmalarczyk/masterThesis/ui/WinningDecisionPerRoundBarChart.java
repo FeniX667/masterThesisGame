@@ -6,6 +6,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
@@ -84,6 +85,8 @@ public class WinningDecisionPerRoundBarChart extends JFrame {
 
         CategoryPlot plot =  chart.getCategoryPlot();
         ((BarRenderer) plot.getRenderer()).setBarPainter(new StandardBarPainter());
+        NumberAxis numberAxis = (NumberAxis)plot.getRangeAxis();
+        numberAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
         return chart;
     }
