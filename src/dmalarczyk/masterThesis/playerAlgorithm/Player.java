@@ -9,6 +9,7 @@ import java.util.List;
 public abstract class Player {
     public PlayerSpace playerSpace;
     public String name;
+    public String acronym;
     public boolean isPlayerSpaceSet;
 
     Player(){

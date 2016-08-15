@@ -13,6 +13,7 @@ public class Human extends Player {
 
     public Human(){
         this.name = "Human";
+        this.acronym = "H";
         this.user_input = new Scanner( System.in );
     }
 

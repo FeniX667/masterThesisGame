@@ -12,6 +12,7 @@ public class RandomAlgorithm extends Player {
     public RandomAlgorithm(){
         super();
         this.name = "RandomAlgorithm";
+        this.acronym = "R";
     }
 
 

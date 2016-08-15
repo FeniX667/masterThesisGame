@@ -12,6 +12,7 @@ public class MinMaxAlgorithm extends Player {
     public MinMaxAlgorithm() {
         super();
         this.name = "MinMaxAlgorithm";
+        this.acronym = "Mm";
     }
 
     @Override

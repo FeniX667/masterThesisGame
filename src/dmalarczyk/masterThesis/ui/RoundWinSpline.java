@@ -19,9 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Created by Malar on 2016-06-20.
- */
 public class RoundWinSpline extends JFrame {
     public RoundWinSpline(String applicationTitle, String chartTitle, List<GameStatistics> gameStatistics){
         super(applicationTitle);
@@ -37,7 +34,9 @@ public class RoundWinSpline extends JFrame {
         setContentPane(chartPanel);
 
         try {
-            ChartUtilities.saveChartAsPNG(new File("roundWin.png"), chart, 1000, 540, null);
+            String firstPlayerName = gameStatistics.get(0).firstPlayerAcronym;
+            String secondPlayerName = gameStatistics.get(0).secondPlayerAcronym;
+            ChartUtilities.saveChartAsPNG(new File(firstPlayerName+ "Vs" +secondPlayerName+ "RoundWin.png"), chart, 1000, 540, null);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -64,9 +63,9 @@ public class RoundWinSpline extends JFrame {
             }
         }
 
+        XYSeries secondSeries = new XYSeries(gameStatistics.get(0).secondPlayerName + " wins ");
         XYSeries averageSeries = new XYSeries("Average wins");
-        XYSeries firstSeries = new XYSeries("First player wins");
-        XYSeries secondSeries = new XYSeries("Second player wins");
+        XYSeries firstSeries = new XYSeries(gameStatistics.get(0).firstPlayerName + " wins");
 
         for(int i = 0 ; i < 12 ; i++){
             averageSeries.add(i, averageWinsInTurn[i]/2);

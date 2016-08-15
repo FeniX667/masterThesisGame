@@ -35,6 +35,10 @@ public class Engine {
         secondPlayer.setPlayerSpace(roundState.spaceOfSecondPlayer);
         this.firstPlayer = firstPlayer;
         this.secondPlayer = secondPlayer;
+        statistics.firstPlayerAcronym = firstPlayer.acronym;
+        statistics.secondPlayerAcronym = secondPlayer.acronym;
+        statistics.firstPlayerName = firstPlayer.name;
+        statistics.secondPlayerName = secondPlayer.name;
     }
 
     private void initVariables(){

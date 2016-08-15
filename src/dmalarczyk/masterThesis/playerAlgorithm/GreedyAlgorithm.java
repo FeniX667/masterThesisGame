@@ -12,6 +12,7 @@ public class GreedyAlgorithm extends Player {
     public GreedyAlgorithm() {
         super();
         this.name = "GreedyAlgorithm";
+        this.acronym = "G";
     }
 
     @Override

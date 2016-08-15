@@ -16,6 +16,7 @@ public class MctsAlgorithm extends Player {
     public MctsAlgorithm(){
         super();
         this.name = "MctsAlgorithm";
+        this.acronym = "Mcts";
         this.timeRestriction = 1000;
         this.iterationRestriction = 2000;
         rnd = new Random();
@@ -23,6 +24,7 @@ public class MctsAlgorithm extends Player {
     public MctsAlgorithm(int timeRestriction){
         super();
         this.name = "MctsAlgorithm";
+        this.acronym = "Mcts";
         this.timeRestriction = timeRestriction;
         this.iterationRestriction = 2000;
         rnd = new Random();

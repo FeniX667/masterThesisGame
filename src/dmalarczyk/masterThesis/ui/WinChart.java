@@ -35,7 +35,9 @@ public class WinChart extends JFrame {
         setContentPane(chartPanel);
 
         try {
-            ChartUtilities.saveChartAsPNG(new File("win.png"), chart, 1000, 540, null);
+            String firstPlayerName = gameStatistics.get(0).firstPlayerAcronym;
+            String secondPlayerName = gameStatistics.get(0).secondPlayerAcronym;
+            ChartUtilities.saveChartAsPNG(new File(firstPlayerName+ "Vs" +secondPlayerName+ "Win.png"), chart, 1000, 540, null);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,9 +58,9 @@ public class WinChart extends JFrame {
         }
 
         DefaultPieDataset result = new DefaultPieDataset ();
-        result.setValue("Second player", secondWins);
+        result.setValue(gameStatistics.get(0).firstPlayerName + " ", firstWins);
         result.setValue("Draws", draws);
-        result.setValue("First player", firstWins);
+        result.setValue(gameStatistics.get(0).secondPlayerName, secondWins);
         return result;
     }
 

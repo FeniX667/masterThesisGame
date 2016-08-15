@@ -2,6 +2,7 @@ package dmalarczyk.masterThesis.ui;
 
 import dmalarczyk.masterThesis.gameEngine.GameStatistics;
 import dmalarczyk.masterThesis.gameModel.DecisionType;
+import dmalarczyk.masterThesis.gameModel.RoundState;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
@@ -36,7 +37,9 @@ public class GuardDecisionPerRoundBarChart extends JFrame {
         setContentPane(chartPanel);
 
         try {
-            ChartUtilities.saveChartAsPNG(new File("guardDecision.png"), chart, 1050, 600, null);
+            String firstPlayerName = gameStatistics.get(0).firstPlayerAcronym;
+            String secondPlayerName = gameStatistics.get(0).secondPlayerAcronym;
+            ChartUtilities.saveChartAsPNG(new File(firstPlayerName+ "Vs" +secondPlayerName+ "GuardDecision.png"), chart, 1050, 600, null);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -60,7 +63,7 @@ public class GuardDecisionPerRoundBarChart extends JFrame {
             for( DecisionType decision :decisions){
                 int count = 0;
                 for(GameStatistics statistics : gameStatistics) {
-                    if (statistics.winningMove == decision  && statistics.endingRound == i)
+                    if (statistics.winningMove == decision && statistics.winner== RoundState.Winner.firstPlayer  && statistics.endingRound == i)
                         count++;
                 }
                 decisionCountMap.put(decision, count);
